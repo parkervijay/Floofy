@@ -300,24 +300,18 @@ nav .container {
   transition: var(--transition-fast);
 }
 
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--primary);
-  transition: var(--transition-smooth);
-}
 
 .nav-links a:hover {
   color: var(--primary);
+  text-shadow: 0 0 8px rgba(244, 162, 89, 0.35);
 }
+
 
 .nav-links a:hover::after,
 .nav-links a.active::after {
   width: 100%;
+  box-shadow: 0 0 12px rgba(244, 162, 89, 0.4);
+
 }
 
 .nav-links a.active {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Navbar from "@/components/Navbar";
 import "./globals.css";
 import LegacyScripts from "@/components/LegacyScripts";
 import CustomCursor from "@/components/ui/custom-cursor";
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
+  
   children,
 }: {
   children: React.ReactNode;
@@ -21,34 +23,9 @@ export default function RootLayout({
         {/* Custom Cursor */}
         <CustomCursor />
         <div id="cursor-trail-root"></div>
-
-        {/* Floofy navbar */}
-        <nav>
-          <div className="container">
-            <Link href="/" className="logo">
-              Floofy
-            </Link>
-            <button className="mobile-menu-btn" aria-label="Menu">
-              <span />
-              <span />
-              <span />
-            </button>
-            <ul className="nav-links">
-              <li>
-                <Link href="/">Adoption</Link>
-              </li>
-              <li>
-                <Link href="/education">Education</Link>
-              </li>
-              <li>
-                <Link href="/care">Care</Link>
-              </li>
-            </ul>
-          </div>
-        </nav>
-
         {/* Page content */}
         {children}
+<Navbar />
 
         {/* Footer */}
         <footer>
