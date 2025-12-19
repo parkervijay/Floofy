@@ -19,40 +19,47 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="cursor-none">
-        {/* Custom Cursor */}
-        <CustomCursor />
-        <div id="cursor-trail-root"></div>
-        {/* Page content */}
-        {children}
-<Navbar />
+    <body className="cursor-none min-h-screen overflow-x-hidden">
 
-        {/* Footer */}
-        <footer>
-          <div className="container">
-            <div className="footer-content">
-              <div className="footer-brand">
-                <span className="logo">Floofy</span>
-                <p className="footer-tagline">Adoption made responsible</p>
-              </div>
-              <ul className="footer-links">
-                <li>
-                  <Link href="/">Adoption</Link>
-                </li>
-                <li>
-                  <Link href="/education">Education</Link>
-                </li>
-                <li>
-                  <Link href="/care">Care</Link>
-                </li>
-              </ul>
-            </div>
+    {/* Custom Cursor */}
+    <CustomCursor />
+    <div id="cursor-trail-root"></div>
+
+    {/* Navbar MUST come first */}
+    <Navbar />
+
+    {/* Page content */}
+    <main className="pt-[72px]">
+      {children}
+    </main>
+
+    {/* Footer */}
+    <footer>
+      <div className="container">
+        <div className="footer-content">
+          <div className="footer-brand">
+            <span className="logo">Floofy</span>
+            <p className="footer-tagline">Adoption made responsible</p>
           </div>
-        </footer>
+          <ul className="footer-links">
+            <li>
+              <Link href="/">Adoption</Link>
+            </li>
+            <li>
+              <Link href="/education">Education</Link>
+            </li>
+            <li>
+              <Link href="/care">Care</Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </footer>
 
-        {/* Legacy scripts (carousel, loader, etc) */}
-        <LegacyScripts />
-      </body>
-    </html>
+    {/* Legacy scripts */}
+    <LegacyScripts />
+  </body>
+</html>
+
   );
 }

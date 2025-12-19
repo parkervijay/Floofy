@@ -1,94 +1,33 @@
+"use client";
+
 import IntroAnimation from "@/components/ui/scroll-morph-hero";
+import { FloofyVapourHero } from "@/components/ui/vapour-text-effect";
 
 export default function Home() {
   return (
     <main className="min-h-screen">
       {/* HERO SECTION */}
-      <section className="hero">
-        <div className="hero-shapes">
-          <div className="hero-shape hero-shape-1"></div>
-          <div className="hero-shape hero-shape-2"></div>
-          <div className="hero-shape hero-shape-3"></div>
-          <div className="hero-shape hero-shape-4"></div>
-        </div>
-        <div className="container">
-          <div className="hero-content">
-            <h1>
-              Floofy. <span>Adoption made responsible.</span>
-            </h1>
-            <p className="hero-subtitle">
-              Connecting verified shelters, NGOs, and loving families through transparent,
-              responsible pet adoption. Find your perfect companion today.
-            </p>
+    <div
+  className="w-full"
+  style={{
+    background: `
+      radial-gradient(
+        600px 140px at 50% 0%,
+        rgba(244, 162, 89, 0.08),
+        rgba(244, 162, 89, 0.04),
+        transparent 70%
+      )
+    `,
+  }}
+>
+  <div className="w-full relative">
+  <div className="relative w-full min-h-[320px] sm:min-h-[360px] md:min-h-[420px] flex items-center justify-center overflow-visible">
+  <FloofyVapourHero />
+</div>
+</div>
+  <IntroAnimation />
+</div>
 
-            <div className="hero-features">
-              <div className="hero-feature">
-                <div className="hero-feature-icon">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                  >
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </div>
-                <span>Verified shelters only</span>
-              </div>
-              <div className="hero-feature">
-                <div className="hero-feature-icon">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                  >
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </div>
-                <span>Transparent process</span>
-              </div>
-              <div className="hero-feature">
-                <div className="hero-feature-icon">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                  >
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </div>
-                <span>Post-adoption support</span>
-              </div>
-            </div>
-
-            <div className="hero-cta">
-              <a href="#available" className="btn-primary">
-                Explore pets
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </a>
-              
-            </div>
-          </div>
-          </div>
-      </section>
       {/* AVAILABLE FOR ADOPTION — hero replaces old carousel */}
       <section id="available">
         <div className="container">

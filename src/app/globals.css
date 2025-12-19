@@ -42,6 +42,48 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
+:root {
+  --nav-height: 72px; /* adjust if your navbar is taller */
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background: #ffffff;
+}
+section {
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+html,
+body {
+  background: radial-gradient(
+      1200px 600px at 10% -10%,
+      rgba(244, 162, 89, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at 90% 20%,
+      rgba(255, 210, 150, 0.22),
+      transparent 55%
+    ),
+    linear-gradient(
+      180deg,
+      #fffdf9 0%,
+      #ffffff 45%,
+      #fff7ef 100%
+    );
+  background-attachment: fixed;
+}
+
 
 :root {
   --radius: 0.625rem;
