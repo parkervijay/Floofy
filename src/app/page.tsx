@@ -7,19 +7,7 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       {/* HERO SECTION */}
-    <div
-  className="w-full"
-  style={{
-    background: `
-      radial-gradient(
-        600px 140px at 50% 0%,
-        rgba(244, 162, 89, 0.08),
-        rgba(244, 162, 89, 0.04),
-        transparent 70%
-      )
-    `,
-  }}
->
+   <div className="w-full bg-transparent">
   <div className="w-full relative">
   <div className="relative w-full min-h-[320px] sm:min-h-[360px] md:min-h-[420px] flex items-center justify-center overflow-visible">
   <FloofyVapourHero />
@@ -29,19 +17,15 @@ export default function Home() {
 </div>
 
       {/* AVAILABLE FOR ADOPTION — hero replaces old carousel */}
-      <section id="available">
-        <div className="container">
-          <h2 className="section-title">
-            Available for <span>adoption</span>
-          </h2>
+       <section id="available" className="relative w-full">
+  <h2 className="section-title text-center mb-12">
+    Available for <span>adoption</span>
+  </h2>
 
-          {/* This box is where the old carousel was. Now it holds the scroll-morph hero. */}
-          <div className="w-full h-[800px] border border-border rounded-2xl overflow-hidden relative bg-card">
-            <IntroAnimation />
-          </div>
-        </div>
-      </section>
-
+  <div className="relative w-full h-[800px] overflow-hidden">
+    <IntroAnimation />
+  </div>
+</section>
       {/* WHY ADOPTION IS BETTER THAN BUYING */}
       <section>
         <div className="container">
@@ -215,7 +199,7 @@ export default function Home() {
 </section>
 
       {/* APP PREVIEW SECTION */}
-      <section className="app-preview">
+      <section className="app-preview bg-transparent relative">
         <div className="container">
           <h2 className="section-title">
             Experience the <span>Floofy</span> app

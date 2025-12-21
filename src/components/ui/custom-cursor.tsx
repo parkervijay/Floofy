@@ -8,6 +8,9 @@ interface Pos {
 }
 
 export default function CustomCursor() {
+  if (typeof window !== "undefined" && window.innerWidth < 768) {
+  return null;
+}
   const [pos, setPos] = useState<Pos>({ x: 0, y: 0 });
   const [visible, setVisible] = useState(false);
   const [active, setActive] = useState(false);

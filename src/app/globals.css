@@ -1,6 +1,6 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -47,11 +47,13 @@
 }
 html,
 body {
+  height: 100%;
+  width: 100%;
   margin: 0;
   padding: 0;
-  width: 100%;
-  background: #ffffff;
+  background: transparent;
 }
+
 section {
   margin: 0;
   padding: 0;
@@ -63,7 +65,7 @@ h3,
 p {
   margin: 0;
 }
-html,
+/* html,
 body {
   background: radial-gradient(
       1200px 600px at 10% -10%,
@@ -82,7 +84,7 @@ body {
       #fff7ef 100%
     );
   background-attachment: fixed;
-}
+} */
 
 
 :root {
@@ -154,14 +156,14 @@ body {
   --sidebar-ring: oklch(0.552 0.016 285.938);
 }
 
-@layer base {
+/* @layer base {
   * {
     @apply border-border outline-none;
   }
   body {
     @apply bg-background text-foreground;
   }
-}
+} */
 :root {
   --primary: #F4A259;
   --primary-dark: #d88a3d;
@@ -822,10 +824,10 @@ section {
   color: white;
 }
 /* Floofy stats section */
-.stats-section {
+/* .stats-section {
   background: linear-gradient(135deg, #4a3f35 0%, #2d2620 100%);
   color: white;
-}
+} */
 
 .stat-card .stat-number {
   color: #ffddb3;
@@ -848,14 +850,14 @@ section {
   line-height: 1.7;
 }
 
-.app-preview {
+/* .app-preview {
   background: linear-gradient(135deg, var(--charcoal) 0%, var(--charcoal-light) 100%);
   padding: 100px 0;
 }
 
 .app-preview .section-title {
   color: white;
-}
+} */
 
 .phone-mockups {
   display: flex;
@@ -1361,6 +1363,50 @@ footer {
     transform: none !important;
   }
 }
+/* Mobile performance tuning */
+@media (max-width: 768px) {
+  .gradients-container {
+    filter: blur(24px) !important;
+    opacity: 0.75;
+  }
+}
+/* Gradient animation keyframes */
+@keyframes moveVertical {
+  0% {
+    transform: translateY(-50%);
+  }
+  50% {
+    transform: translateY(50%);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes moveHorizontal {
+  0% {
+    transform: translateX(-50%) translateY(-10%);
+  }
+  50% {
+    transform: translateX(50%) translateY(10%);
+  }
+  100% {
+    transform: translateX(-50%) translateY(-10%);
+  }
+}
+
+@keyframes moveInCircle {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* Hide custom cursor on touch devices */
 @media (hover: none) and (pointer: coarse) {
   .custom-cursor,

@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import Navbar from "@/components/Navbar";
 import "./globals.css";
+import type { Metadata } from "next";
+import Navbar from "@/components/Navbar";
 import LegacyScripts from "@/components/LegacyScripts";
 import CustomCursor from "@/components/ui/custom-cursor";
+import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
+
 
 export const metadata: Metadata = {
   title: "Floofy - Adoption made responsible",
@@ -18,48 +19,37 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-    <body className="cursor-none min-h-screen overflow-x-hidden">
+   <html lang="en">
+  <body className="relative min-h-screen overflow-x-hidden">
+    {/* Background (always behind) */}
+    <BackgroundGradientAnimation
+      gradientBackgroundStart="rgb(255,244,235)"
+      gradientBackgroundEnd="rgb(255,255,255)"
+      firstColor="244,162,89"
+      secondColor="255,200,150"
+      thirdColor="255,180,120"
+      fourthColor="255,160,100"
+      fifthColor="255,210,170"
+      interactive={false}
+    />
 
-    {/* Custom Cursor */}
+    {/* Cursor */}
     <CustomCursor />
-    <div id="cursor-trail-root"></div>
 
-    {/* Navbar MUST come first */}
-    <Navbar />
-
-    {/* Page content */}
-    <main className="pt-[72px]">
+    {/* App content */}
+    <div className="relative z-10">
+      <Navbar />
       {children}
-    </main>
 
-    {/* Footer */}
-    <footer>
-      <div className="container">
-        <div className="footer-content">
-          <div className="footer-brand">
-            <span className="logo">Floofy</span>
-            <p className="footer-tagline">Adoption made responsible</p>
-          </div>
-          <ul className="footer-links">
-            <li>
-              <Link href="/">Adoption</Link>
-            </li>
-            <li>
-              <Link href="/education">Education</Link>
-            </li>
-            <li>
-              <Link href="/care">Care</Link>
-            </li>
-          </ul>
+      <footer className="mt-24 pb-10">
+        <div className="container">
+          <span className="logo">Floofy</span>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
 
-    {/* Legacy scripts */}
     <LegacyScripts />
   </body>
 </html>
-
   );
 }

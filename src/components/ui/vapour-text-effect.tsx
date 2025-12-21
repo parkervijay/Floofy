@@ -481,7 +481,7 @@ function useIsInView(ref: React.RefObject<HTMLElement>) {
 
 export const FloofyVapourHero = () => {
   return (
-  <div className="w-full h-full flex justify-center items-center">
+ <div className="w-full h-full flex justify-center items-center bg-transparent">
     <VaporizeTextCycle
       texts={["Floofy", "Adopt, Don't Buy"]}
       font={{

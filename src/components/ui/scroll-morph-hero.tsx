@@ -71,7 +71,6 @@ function FlipCard({
             alt={`hero-${index}`}
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-transparent" />
         </div>
 
         {/* Back Face */}
@@ -122,6 +121,8 @@ export default function IntroAnimation() {
   const [introPhase, setIntroPhase] = useState<AnimationPhase>("scatter");
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
+  const ACTIVE_ZONE_RATIO = 0.45; 
+// 45% center area horizontally
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -154,20 +155,56 @@ export default function IntroAnimation() {
     if (!container) return;
 
     const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      const newScroll = Math.min(Math.max(scrollRef.current + e.deltaY, 0), MAX_SCROLL);
-      scrollRef.current = newScroll;
-      virtualScroll.set(newScroll);
-    };
+  if (!containerRef.current) return;
 
+  const rect = containerRef.current.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+
+  const leftLimit = rect.width * (0.5 - ACTIVE_ZONE_RATIO / 2);
+  const rightLimit = rect.width * (0.5 + ACTIVE_ZONE_RATIO / 2);
+
+  // ❌ Ignore scroll if outside center zone
+  if (x < leftLimit || x > rightLimit) return;
+
+  e.preventDefault();
+
+  const newScroll = Math.min(
+    Math.max(scrollRef.current + e.deltaY, 0),
+    MAX_SCROLL
+  );
+
+  scrollRef.current = newScroll;
+  virtualScroll.set(newScroll);
+};
     let touchStartY = 0;
 
 const handleTouchStart = (e: TouchEvent) => {
+  if (!containerRef.current) return;
+
+  const rect = containerRef.current.getBoundingClientRect();
+  const touchX = e.touches[0].clientX - rect.left;
+
+  const leftLimit = rect.width * (0.5 - ACTIVE_ZONE_RATIO / 2);
+  const rightLimit = rect.width * (0.5 + ACTIVE_ZONE_RATIO / 2);
+
+  // ❌ Ignore touches outside center
+  if (touchX < leftLimit || touchX > rightLimit) return;
+
   touchStartY = e.touches[0].clientY;
 };
 
 const handleTouchMove = (e: TouchEvent) => {
-  // ✅ important for mobile: stop the page from scrolling
+  if (!containerRef.current) return;
+
+  const rect = containerRef.current.getBoundingClientRect();
+  const touchX = e.touches[0].clientX - rect.left;
+
+  const leftLimit = rect.width * (0.5 - ACTIVE_ZONE_RATIO / 2);
+  const rightLimit = rect.width * (0.5 + ACTIVE_ZONE_RATIO / 2);
+
+  // ❌ Ignore side swipes
+  if (touchX < leftLimit || touchX > rightLimit) return;
+
   e.preventDefault();
 
   const touchY = e.touches[0].clientY;
@@ -178,11 +215,10 @@ const handleTouchMove = (e: TouchEvent) => {
     Math.max(scrollRef.current + deltaY, 0),
     MAX_SCROLL
   );
+
   scrollRef.current = newScroll;
   virtualScroll.set(newScroll);
 };
-
-
     container.addEventListener("wheel", handleWheel, { passive: false });
     container.addEventListener("touchstart", handleTouchStart, { passive: false });
     container.addEventListener("touchmove", handleTouchMove, { passive: false });
@@ -255,10 +291,13 @@ const handleTouchMove = (e: TouchEvent) => {
   const contentY = useTransform(smoothMorph, [0.8, 1], [20, 0]);
 
   return (
-    <div ref={containerRef} className="relative w-full h-full bg-[#FAFAFA] overflow-hidden touch-none">
-      <div className="flex h-full w-full flex-col items-center justify-center perspective-1000">
+   <div
+  ref={containerRef}
+  className="relative w-full h-full overflow-hidden touch-none bg-transparent"
+>
+     <div className="relative h-full w-full perspective-1000">
         {/* Intro text */}
-        <div className="absolute z-0 flex flex-col items-center justify-center text-center pointer-events-none top-1/2 -translate-y-1/2">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0 flex flex-col items-center text-center pointer-events-none">
           <motion.h1
             initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
             animate={
@@ -287,9 +326,15 @@ const handleTouchMove = (e: TouchEvent) => {
 
         {/* Content in arc state */}
         <motion.div
-          style={{ opacity: contentOpacity, y: contentY }}
-          className="absolute top-[10%] z-10 flex flex-col items-center justify-center text-center pointer-events-none px-4"
-        >
+  style={{
+    opacity: contentOpacity,
+    y: contentY,
+    x: 0,
+  }}
+  className="absolute inset-x-0 top-[10%] z-10
+             flex flex-col items-center justify-center
+             text-center pointer-events-none"
+>
           <h2 className="text-3xl md:text-5xl font-semibold text-gray-900 tracking-tight mb-4">
             Explore Our Vision
           </h2>
