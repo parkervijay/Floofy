@@ -176,8 +176,7 @@ function VaporizeTextCycle({
     p.speed = Math.random() * 0.5 + 0.3;
 
     // move ONLY to the left
-    p.velocityX = -p.speed * 1.4;
-
+    p.velocityX = isMobile ? -p.speed * 1.0 : -p.speed * 1.4;
     // minimal vertical jitter
     p.velocityY = (Math.random() - 0.5) * 0.25;
   }
@@ -194,7 +193,8 @@ function VaporizeTextCycle({
   if (p.y > bottomLimit) p.y = bottomLimit;
 
   // smooth disintegration
-  p.opacity -= 0.02;
+ const fadeFactor = isMobile ? 0.012 : 0.02;
+p.opacity -= fadeFactor;
 });
 
 
@@ -247,15 +247,19 @@ function VaporizeTextCycle({
     return () => ro.disconnect();
   }, []);
 
-  return (
-    <div
-      ref={wrapperRef}
-      style={{
-  width: "100%",
-  height: "160px", // ≈ 4cm as you wanted
-  pointerEvents: "none",
-}}
-      className="relative flex items-center justify-center"
+  // ✅ MOVE THIS ABOVE return
+const isMobile = wrapperSize.width < 480;
+
+return (
+  <div
+    ref={wrapperRef}
+    style={{
+      width: "100%",
+      height: isMobile ? "90px" : "160px", // mobile tighter
+      pointerEvents: "none",
+      marginTop: isMobile ? "1.5rem" : "0px",
+    }}
+    className="relative flex items-center justify-center"
     >
       <canvas 
         ref={canvasRef} 
@@ -297,78 +301,89 @@ function renderCanvas(
   dpr: number
 ) {
   const canvas = canvasRef.current;
-if (!canvas) return;
-if (wrapperSize.width === 0 || wrapperSize.height === 0) return;
+  if (!canvas) return;
 
-const ctx = canvas.getContext("2d");
-if (!ctx) return;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
 
-// Device pixel ratio (cap at 2 for performance + sharpness)
-const dpx = Math.min(window.devicePixelRatio || 1, 2);
+  const isMobile = wrapperSize.width < 480;
 
-// Set canvas size in device pixels
-canvas.width = Math.floor(wrapperSize.width * dpx);
-canvas.height = Math.floor(wrapperSize.height * dpx);
+  const dpx = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.floor(wrapperSize.width * dpx);
+  canvas.height = Math.floor(wrapperSize.height * dpx);
+  canvas.style.width = `${wrapperSize.width}px`;
+  canvas.style.height = `${wrapperSize.height}px`;
 
-// Set canvas size in CSS pixels
-canvas.style.width = `${wrapperSize.width}px`;
-canvas.style.height = `${wrapperSize.height}px`;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.scale(dpx, dpx);
+  ctx.clearRect(0, 0, wrapperSize.width, wrapperSize.height);
 
-// Reset transform BEFORE scaling
-ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
 
-// Scale once for high-DPI
-ctx.scale(dpx, dpx);
+  // 🔹 FONT SIZE (mobile only)
+  let effectiveFontSize = font.fontSize;
 
-// Clear using CSS pixel units
-ctx.clearRect(0, 0, wrapperSize.width, wrapperSize.height);
+if (isMobile) {
+  // Start large
+  let testFontSize = 90;
 
-// High-quality rendering
-ctx.imageSmoothingEnabled = true;
-ctx.imageSmoothingQuality = "high";
+  ctx.font = `${font.fontWeight} ${testFontSize}px ${font.fontFamily}`;
 
-// Font rendering hints
-(ctx as any).fontKerning = "normal";
-(ctx as any).textRendering = "geometricPrecision";
-  ctx.font = `${font.fontWeight} ${font.fontSize} ${font.fontFamily}`;
-  ctx.textAlign = "left"; // Always use left alignment for precise positioning
+  const adopt = "Adopt";
+  const comma = ", ";
+  const dontBuy = "Don't Buy";
+
+  let textWidth =
+    ctx.measureText(adopt).width +
+    ctx.measureText(comma).width +
+    ctx.measureText(dontBuy).width;
+
+  // Reduce font size until it fits screen (with padding)
+  const maxWidth = wrapperSize.width * 0.9;
+
+  while (textWidth > maxWidth && testFontSize > 48) {
+    testFontSize -= 2;
+    ctx.font = `${font.fontWeight} ${testFontSize}px ${font.fontFamily}`;
+
+    textWidth =
+      ctx.measureText(adopt).width +
+      ctx.measureText(comma).width +
+      ctx.measureText(dontBuy).width;
+  }
+
+  effectiveFontSize = `${testFontSize}px`;
+}
+
+ctx.font = `${font.fontWeight} ${effectiveFontSize} ${font.fontFamily}`;
+
+
+  ctx.font = `${font.fontWeight} ${effectiveFontSize} ${font.fontFamily}`;
+  ctx.textAlign = "left";
   ctx.textBaseline = "middle";
 
-
- const y = wrapperSize.height / 2;
-
-
-
-  // Check if this is the "Adopt, Don't Buy" text
+  const y = wrapperSize.height / 2;
   const isAdoptText = text.toLowerCase().includes("adopt");
 
   if (isAdoptText) {
-    const adoptText = "Adopt";
-    const commaSpace = ", ";
-    const dontBuyText = "Don't Buy";
-    
-    const adoptMetrics = ctx.measureText(adoptText);
-    const commaMetrics = ctx.measureText(commaSpace);
-    const dontBuyMetrics = ctx.measureText(dontBuyText);
-    const totalWidth = adoptMetrics.width + commaMetrics.width + dontBuyMetrics.width;
+    // 🔹 SAME rendering for mobile + desktop
+    const adopt = "Adopt";
+    const comma = ", ";
+    const dontBuy = "Don't Buy";
 
-    let startX =
-      alignment === "center"
-        ? wrapperSize.width / 2 - totalWidth / 2
-        : alignment === "left"
-        ? 0
-        : wrapperSize.width - totalWidth;
+    const m1 = ctx.measureText(adopt);
+    const m2 = ctx.measureText(comma);
+    const m3 = ctx.measureText(dontBuy);
 
-    // Draw "Adopt" in orange
+    const totalWidth = m1.width + m2.width + m3.width;
+    const startX = wrapperSize.width / 2 - totalWidth / 2;
+
     ctx.fillStyle = "rgb(244, 162, 89)";
-    ctx.fillText(adoptText, startX, y);
+    ctx.fillText(adopt, startX, y);
 
-    // Draw ", " in black
     ctx.fillStyle = "rgb(20, 20, 20)";
-    ctx.fillText(commaSpace, startX + adoptMetrics.width, y);
-
-    // Draw "Don't Buy" in black
-    ctx.fillText(dontBuyText, startX + adoptMetrics.width + commaMetrics.width, y);
+    ctx.fillText(comma, startX + m1.width, y);
+    ctx.fillText(dontBuy, startX + m1.width + m2.width, y);
 
     canvas.textBoundaries = {
       left: startX * dpr,
@@ -376,16 +391,10 @@ ctx.imageSmoothingQuality = "high";
       width: totalWidth * dpr,
     };
   } else {
-    // Render normal text in black
+    // 🔹 NORMAL TEXT (Floofy)
     ctx.fillStyle = "rgb(20, 20, 20)";
-
     const metrics = ctx.measureText(text);
-    const x =
-      alignment === "center"
-        ? wrapperSize.width / 2 - metrics.width / 2
-        : alignment === "left"
-        ? 0
-        : wrapperSize.width - metrics.width;
+    const x = wrapperSize.width / 2 - metrics.width / 2;
 
     ctx.fillText(text, x, y);
 
@@ -398,6 +407,7 @@ ctx.imageSmoothingQuality = "high";
 
   particlesRef.current = sampleParticles(ctx, canvas);
 }
+
 
 function sampleParticles(
   ctx: CanvasRenderingContext2D,

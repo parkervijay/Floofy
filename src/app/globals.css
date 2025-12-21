@@ -1370,6 +1370,13 @@ footer {
     opacity: 0.75;
   }
 }
+@media (max-width: 480px) {
+  .section-title {
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+}
+
 /* Gradient animation keyframes */
 @keyframes moveVertical {
   0% {

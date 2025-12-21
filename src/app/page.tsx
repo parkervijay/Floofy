@@ -1,33 +1,60 @@
 "use client";
-
-import IntroAnimation from "@/components/ui/scroll-morph-hero";
 import { FloofyVapourHero } from "@/components/ui/vapour-text-effect";
+import { useDevice } from "@/hooks/useDevice";
+import CircularGalleryMobile from "@/components/ui/circular-gallery-mobile";
+import type { MobileGalleryItem } from "@/components/ui/circular-gallery-mobile";
+import dynamic from "next/dynamic";
+
+const IntroAnimation = dynamic(
+  () => import("@/components/ui/scroll-morph-hero"),
+  { ssr: false }
+);
 
 export default function Home() {
+  const { isMobile } = useDevice();
+  const mobileItems = [
+    {
+      image: "https://images.unsplash.com/photo-1543466835-00a7907e9de1",
+      breed: "Golden Retriever",
+      age: "2 years",
+    },
+    {
+      image: "https://images.unsplash.com/photo-1517849845537-4d257902454a",
+      breed: "Beagle",
+      age: "1.5 years",
+    },
+    {
+      image: "https://images.unsplash.com/photo-1583511655826-05700d52f4d9",
+      breed: "Indie",
+      age: "3 years",
+    },
+  ];
+  
   return (
     <main className="min-h-screen">
       {/* HERO SECTION */}
-   <div className="w-full bg-transparent">
-  <div className="w-full relative">
-  <div className="relative w-full min-h-[320px] sm:min-h-[360px] md:min-h-[420px] flex items-center justify-center overflow-visible">
-  <FloofyVapourHero />
-</div>
-</div>
-  <IntroAnimation />
-</div>
+      <section className="w-full bg-transparent pt-30 md:pt-20">
+        <div className="relative w-full min-h-[150px] md:min-h-[160px] flex items-center justify-center">
+          <FloofyVapourHero />
+        </div>
+      </section>
 
-      {/* AVAILABLE FOR ADOPTION — hero replaces old carousel */}
-       <section id="available" className="relative w-full">
-  <h2 className="section-title text-center mb-12">
-    Available for <span>adoption</span>
-  </h2>
+      {/* AVAILABLE FOR ADOPTION */}
+      <section className="relative w-full mt-2 md:mt-4">
+        <h2 className="section-title text-center mb-12 max-sm:mt-2 max-sm:mb-6">
+  Available for <span>adoption</span>
+</h2>
+        <div className="relative h-[520px] md:h-[800px]">
+          {!isMobile ? (
+            <IntroAnimation />
+          ) : (
+            <CircularGalleryMobile items={mobileItems} />
+          )}
+        </div>
+      </section>
 
-  <div className="relative w-full h-[800px] overflow-hidden">
-    <IntroAnimation />
-  </div>
-</section>
       {/* WHY ADOPTION IS BETTER THAN BUYING */}
-      <section>
+      <section className="mt-16 md:mt-20">
         <div className="container">
           <h2 className="section-title">
             Why adoption is <span>better</span> than buying
@@ -86,7 +113,7 @@ export default function Home() {
       </section>
 
       {/* WHY ADOPT THROUGH FLOOFY */}
-      <section>
+      <section className="mt-16 md:mt-20">
         <div className="container">
           <h2 className="section-title">
             Why adopt through <span>Floofy</span>
@@ -155,51 +182,50 @@ export default function Home() {
           </div>
         </div>
       </section>
+
       {/* STATS SECTION */}
-<section className="stats-section py-20">
-  <div className="container">
-    <h2 className="section-title text-center mb-12">
-      Trusted by <span>thousands</span> across India
-    </h2>
+      <section className="stats-section py-16 md:py-20 mt-16 md:mt-20">
+        <div className="container">
+          <h2 className="section-title text-center mb-12">
+            Trusted by <span>thousands</span> across India
+          </h2>
 
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+            {/* Stat 1 */}
+            <div className="stat-card">
+              <div className="stat-number text-5xl font-bold tracking-tight mb-2">
+                120+
+              </div>
+              <p className="text-lg font-medium text-gray-600">
+                Verified Shelters
+              </p>
+            </div>
 
-      {/* Stat 1 */}
-      <div className="stat-card">
-        <div className="stat-number text-5xl font-bold tracking-tight mb-2">
-          120+
+            {/* Stat 2 */}
+            <div className="stat-card">
+              <div className="stat-number text-5xl font-bold tracking-tight mb-2">
+                4,800+
+              </div>
+              <p className="text-lg font-medium text-gray-600">
+                Successful Adoptions
+              </p>
+            </div>
+
+            {/* Stat 3 */}
+            <div className="stat-card">
+              <div className="stat-number text-5xl font-bold tracking-tight mb-2">
+                98.7%
+              </div>
+              <p className="text-lg font-medium text-gray-600">
+                Satisfaction Rate
+              </p>
+            </div>
+          </div>
         </div>
-        <p className="text-lg font-medium text-gray-600">
-          Verified Shelters
-        </p>
-      </div>
-
-      {/* Stat 2 */}
-      <div className="stat-card">
-        <div className="stat-number text-5xl font-bold tracking-tight mb-2">
-          4,800+
-        </div>
-        <p className="text-lg font-medium text-gray-600">
-          Successful Adoptions
-        </p>
-      </div>
-
-      {/* Stat 3 */}
-      <div className="stat-card">
-        <div className="stat-number text-5xl font-bold tracking-tight mb-2">
-          98.7%
-        </div>
-        <p className="text-lg font-medium text-gray-600">
-          Satisfaction Rate
-        </p>
-      </div>
-
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* APP PREVIEW SECTION */}
-      <section className="app-preview bg-transparent relative">
+      <section className="app-preview bg-transparent relative mt-16 md:mt-20">
         <div className="container">
           <h2 className="section-title">
             Experience the <span>Floofy</span> app
@@ -241,7 +267,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-          {/* Store buttons (you can wire these later) */}
           <br></br>
           <br></br>
           <center>
@@ -255,16 +280,9 @@ export default function Home() {
               </div>
             </a>
           </center>
-          <div className="store-buttons">
-
-            
-          </div>
+          <div className="store-buttons"></div>
         </div>
       </section>
-
-      
-
-      {/* Footer is in layout or global, so we don’t duplicate it here */}
     </main>
   );
 }
