@@ -29,9 +29,15 @@ export default function CircularGalleryMobile({ items }: Props) {
 
   return (
     <div
-      className="relative w-full h-full flex items-center justify-center overflow-hidden"
-      style={{ perspective: "900px" }}
-    >
+  className="relative w-full h-full flex items-center justify-center overflow-visible"
+  style={{
+    perspective: "900px",
+    transform:
+      typeof window !== "undefined" && window.innerWidth < 768
+        ? "translateY(-1.25rem)"
+        : "none",
+  }}
+>
       <AnimatePresence initial={false}>
         {/* LEFT CARD */}
         <motion.div

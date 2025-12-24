@@ -259,7 +259,7 @@ return (
       pointerEvents: "none",
       marginTop: isMobile ? "1.5rem" : "0px",
     }}
-    className="relative flex items-center justify-center"
+    className="relative flex items-center justify-center mx-auto"
     >
       <canvas 
         ref={canvasRef} 
@@ -309,11 +309,13 @@ function renderCanvas(
   const isMobile = wrapperSize.width < 480;
 
   const dpx = Math.min(window.devicePixelRatio || 1, 2);
-  canvas.width = Math.floor(wrapperSize.width * dpx);
-  canvas.height = Math.floor(wrapperSize.height * dpx);
-  canvas.style.width = `${wrapperSize.width}px`;
-  canvas.style.height = `${wrapperSize.height}px`;
+  const extraPadding = isMobile ? 215 : 0;
 
+canvas.width = Math.floor((wrapperSize.width + extraPadding) * dpx);
+canvas.height = Math.floor(wrapperSize.height * dpx);
+
+canvas.style.width = `${wrapperSize.width + extraPadding}px`;
+canvas.style.height = `${wrapperSize.height}px`;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.scale(dpx, dpx);
   ctx.clearRect(0, 0, wrapperSize.width, wrapperSize.height);
@@ -354,10 +356,6 @@ if (isMobile) {
 
   effectiveFontSize = `${testFontSize}px`;
 }
-
-ctx.font = `${font.fontWeight} ${effectiveFontSize} ${font.fontFamily}`;
-
-
   ctx.font = `${font.fontWeight} ${effectiveFontSize} ${font.fontFamily}`;
   ctx.textAlign = "left";
   ctx.textBaseline = "middle";
@@ -375,9 +373,15 @@ ctx.font = `${font.fontWeight} ${effectiveFontSize} ${font.fontFamily}`;
     const m2 = ctx.measureText(comma);
     const m3 = ctx.measureText(dontBuy);
 
-    const totalWidth = m1.width + m2.width + m3.width;
-    const startX = wrapperSize.width / 2 - totalWidth / 2;
+   const totalWidth = m1.width + m2.width + m3.width;
 
+let startX = wrapperSize.width / 2 - totalWidth / 2;
+
+// 🔒 mobile visual centering (same logic as Floofy)
+if (isMobile) {
+  const freeSpace = wrapperSize.width - totalWidth;
+  startX = freeSpace * 8.0;
+}
     ctx.fillStyle = "rgb(244, 162, 89)";
     ctx.fillText(adopt, startX, y);
 
@@ -394,8 +398,13 @@ ctx.font = `${font.fontWeight} ${effectiveFontSize} ${font.fontFamily}`;
     // 🔹 NORMAL TEXT (Floofy)
     ctx.fillStyle = "rgb(20, 20, 20)";
     const metrics = ctx.measureText(text);
-    const x = wrapperSize.width / 2 - metrics.width / 2;
+    let x = wrapperSize.width / 2 - metrics.width / 2;
 
+// 🔒 mobile visual centering tweak
+if (isMobile) {
+  const freeSpace = wrapperSize.width - metrics.width;
+  x = freeSpace * 1.3;
+}
     ctx.fillText(text, x, y);
 
     canvas.textBoundaries = {

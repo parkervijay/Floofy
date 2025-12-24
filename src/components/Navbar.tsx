@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -9,9 +11,16 @@ export default function Navbar() {
   return (
     <nav>
       <div className="container">
-        <Link href="/" className="logo">
-          Floofy
-        </Link>
+        <Link href="/" className="logo flex items-center gap-2 hover:opacity-90 transition-opacity">
+        <span>Floofy</span>
+ <Image
+  src="/logo.png"
+  alt="Floofy logo"
+  width={30}
+  height={30}
+  className="rounded-full"
+/>
+</Link>
 
         <button className="mobile-menu-btn" aria-label="Menu">
           <span />

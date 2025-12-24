@@ -8,6 +8,7 @@ const config: Config = {
   first: "moveVertical 18s ease-in-out infinite",
   second: "moveInCircle 22s linear infinite",
   third: "moveHorizontal 26s ease-in-out infinite",
+  "shiny-text": "shiny-text 8s infinite",
 },
       keyframes: {
         moveHorizontal: {
@@ -25,6 +26,14 @@ const config: Config = {
           "50%": { transform: "translateY(30%)" },
           "100%": { transform: "translateY(-30%)" },
         },
+        "shiny-text": {
+  "0%, 90%, 100%": {
+    backgroundPosition: "calc(-100% - var(--shiny-width)) 0",
+  },
+  "30%, 60%": {
+    backgroundPosition: "calc(100% + var(--shiny-width)) 0",
+  },
+},
       },
     },
   },
