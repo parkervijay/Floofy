@@ -1426,3 +1426,14 @@ footer {
   }
 }
 
+@keyframes floofy-shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-2px) rotate(-0.5deg); }
+  50% { transform: translateX(2px) rotate(0.5deg); }
+  75% { transform: translateX(-1px) rotate(-0.25deg); }
+  100% { transform: translateX(0); }
+}
+
+.hover-shake:hover {
+  animation: floofy-shake 0.35s ease-in-out;
+}

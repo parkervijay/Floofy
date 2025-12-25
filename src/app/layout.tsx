@@ -1,16 +1,27 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
+import AppNavbar from "@/components/AppNavbar";
 import LegacyScripts from "@/components/LegacyScripts";
 import CustomCursor from "@/components/ui/custom-cursor";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 
 
+
+
 export const metadata: Metadata = {
-  title: "Floofy - Adoption made responsible",
+  title: "Floofy",
   description:
     "Connecting verified shelters, NGOs, and loving families through transparent, responsible pet adoption.",
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
 };
+// const navItems = [
+//   { name: "Adoption", url: "/", icon: PawPrint },
+//   { name: "Education", url: "/education", icon: BookOpen },
+//   { name: "Care", url: "/care", icon: HeartHandshake },
+// ];
 
 export default function RootLayout({
   
@@ -38,7 +49,7 @@ export default function RootLayout({
 
     {/* App content */}
     <div className="relative z-10">
-      <Navbar />
+    <AppNavbar />
       {children}
 
       <footer className="mt-24 pb-10">
