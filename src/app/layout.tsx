@@ -4,6 +4,8 @@ import AppNavbar from "@/components/AppNavbar";
 import LegacyScripts from "@/components/LegacyScripts";
 import CustomCursor from "@/components/ui/custom-cursor";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
+import { StackedCircularFooter } from "@/components/ui/stacked-circular-footer"
+
 
 
 
@@ -52,12 +54,10 @@ export default function RootLayout({
     <AppNavbar />
       {children}
 
-      <footer className="mt-24 pb-10">
-        <div className="container">
-          <span className="logo">Floofy</span>
-        </div>
-      </footer>
+      <StackedCircularFooter />
+
     </div>
+    
 
     <LegacyScripts />
   </body>
