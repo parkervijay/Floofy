@@ -1437,3 +1437,37 @@ footer {
 .hover-shake:hover {
   animation: floofy-shake 0.35s ease-in-out;
 }
+/* At the bottom of globals.css */
+
+/* Make elements visible by default, let JS enhance with animations */
+.adoption-tile,
+.feature-card,
+.resource-card,
+.care-card,
+.pet-card,
+.phone-mockup {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Only apply animations when JS has added the animate class */
+.adoption-tile.animate,
+.feature-card.animate,
+.resource-card.animate,
+.care-card.animate,
+.pet-card.animate,
+.phone-mockup.animate {
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+  transition: var(--transition-smooth);
+}
+
+.adoption-tile.animate.visible,
+.feature-card.animate.visible,
+.resource-card.animate.visible,
+.care-card.animate.visible,
+.pet-card.animate.visible,
+.phone-mockup.animate.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}

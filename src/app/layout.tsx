@@ -5,6 +5,8 @@ import LegacyScripts from "@/components/LegacyScripts";
 import CustomCursor from "@/components/ui/custom-cursor";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { StackedCircularFooter } from "@/components/ui/stacked-circular-footer"
+import ScrollAnimations from "@/components/ScrollAnimations";
+
 
 
 
@@ -19,18 +21,14 @@ export const metadata: Metadata = {
     apple: "/icon.png",
   },
 };
-// const navItems = [
-//   { name: "Adoption", url: "/", icon: PawPrint },
-//   { name: "Education", url: "/education", icon: BookOpen },
-//   { name: "Care", url: "/care", icon: HeartHandshake },
-// ];
-
 export default function RootLayout({
+  
   
   children,
 }: {
   children: React.ReactNode;
-}) {
+}) 
+{
   return (
    <html lang="en">
   <body className="relative min-h-screen overflow-x-hidden">
@@ -58,6 +56,7 @@ export default function RootLayout({
 
     </div>
     
+<ScrollAnimations />
 
     <LegacyScripts />
   </body>
