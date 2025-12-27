@@ -6,6 +6,7 @@ import { fetchYouTubeVideos, fetchPetNews, fetchArticles, SAMPLE_VIDEOS, SAMPLE_
 import { VideoCarousel } from "@/components/ui/video-carousel";
 import type { Video, Article, Story } from "@/lib/education-api";
 import { ArticleCarousel, FULL_ARTICLES } from "@/components/ui/article-carousel";
+import { NewsCarousel } from "@/components/ui/news-carousel";
 
 
 
@@ -131,116 +132,68 @@ const loadData = async () => {
 
       {/* FurryFeed Section */}
       <section className="py-12 px-6">
-        <div className="container">
-          <div className="text-center mb-10">
-            <div className="flex items-center justify-center gap-3 mb-3">
-              <Newspaper className="text-[#F4A259] relative -top-[29px]" size={40} />
-              <h2 className="section-title inline-block mb-0">
-                <span>FurryFeed</span>
-              </h2>
-            </div>
-            <p className="text-lg text-[var(--grey-medium)] mb-6">
-              Weekly heartwarming stories from around the world
-            </p>
+  <div className="container">
+    <div className="text-center mb-10">
+      <div className="flex items-center justify-center gap-3 mb-3">
+        <Newspaper className="text-[#F4A259] relative -top-[29px]" size={40} />
+        <h2 className="section-title inline-block mb-0">
+          <span>FurryFeed</span>
+        </h2>
+      </div>
+      <p className="text-lg text-[var(--grey-medium)] mb-6">
+        Real-time heartwarming pet stories from around the world
+      </p>
 
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              <button
-                onClick={() => setStoryFilter('all')}
-                className={`px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
-                  storyFilter === 'all'
-                    ? 'bg-[#F4A259] text-white shadow-lg scale-105'
-                    : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
-                }`}
-              >
-                All Stories
-              </button>
-              <button
-                onClick={() => setStoryFilter('Bangalore')}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
-                  storyFilter === 'Bangalore'
-                    ? 'bg-blue-600 text-white shadow-lg scale-105'
-                    : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
-                }`}
-              >
-                <Building2 size={18} />
-                Bangalore
-              </button>
-              <button
-                onClick={() => setStoryFilter('India')}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
-                  storyFilter === 'India'
-                    ? 'bg-orange-600 text-white shadow-lg scale-105'
-                    : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
-                }`}
-              >
-                <Map size={18} />
-                India
-              </button>
-              <button
-                onClick={() => setStoryFilter('World')}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
-                  storyFilter === 'World'
-                    ? 'bg-[#F4A259] text-white shadow-lg scale-105'
-                    : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
-                }`}
-              >
-                <Globe size={18} />
-                World
-              </button>
-            </div>
-          </div>
+      <div className="flex items-center justify-center gap-3 flex-wrap">
+        <button
+          onClick={() => setStoryFilter('all')}
+          className={`px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
+            storyFilter === 'all'
+              ? 'bg-[#F4A259] text-white shadow-lg scale-105'
+              : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
+          }`}
+        >
+          All Stories
+        </button>
+        <button
+          onClick={() => setStoryFilter('Bangalore')}
+          className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
+            storyFilter === 'Bangalore'
+              ? 'bg-blue-600 text-white shadow-lg scale-105'
+              : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
+          }`}
+        >
+          <Building2 size={18} />
+          Bangalore
+        </button>
+        <button
+          onClick={() => setStoryFilter('India')}
+          className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
+            storyFilter === 'India'
+              ? 'bg-orange-600 text-white shadow-lg scale-105'
+              : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
+          }`}
+        >
+          <Map size={18} />
+          India
+        </button>
+        <button
+          onClick={() => setStoryFilter('World')}
+          className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
+            storyFilter === 'World'
+              ? 'bg-[#F4A259] text-white shadow-lg scale-105'
+              : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
+          }`}
+        >
+          <Globe size={18} />
+          World
+        </button>
+      </div>
+    </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredStories.map((story) => (
-              <div
-                key={story.id}
-                className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-2 border-[#F4A259]/20 hover:border-[#F4A259]/40"
-              >
-                <div className="relative overflow-hidden h-56">
-                  <img
-                    src={story.image}
-                    alt={story.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute top-3 right-3">
-                    <span className={`${getLocationColor(story.location)} text-white text-xs px-3 py-1.5 rounded-full font-medium flex items-center gap-1 shadow-lg`}>
-                      {getLocationIcon(story.location)}
-                      {story.location}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                </div>
-
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-[var(--charcoal)] mb-3 line-clamp-2 group-hover:text-[#F4A259] transition-all">
-                    {story.title}
-                  </h3>
-                  <p className="text-[var(--grey-medium)] mb-4 line-clamp-3">
-                    {story.summary}
-                  </p>
-
-                  <div className="flex items-center justify-between text-sm text-[var(--grey-medium)] pt-4 border-t border-gray-200">
-                    <div className="flex items-center gap-2">
-                      <Calendar size={16} />
-                      <span>{story.date}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Newspaper size={16} />
-                      <span className="font-medium">{story.source}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {filteredStories.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-[var(--grey-medium)] text-lg">No stories found for this location.</p>
-            </div>
-          )}
-        </div>
-      </section>
+    <NewsCarousel location={storyFilter} />
+  </div>
+</section>
     </main>
   );
 }
