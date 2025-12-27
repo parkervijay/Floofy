@@ -228,12 +228,13 @@ export function NewsCarousel({ location = 'all' }: NewsCarouselProps) {
 
   return (
     <>
-      <div className="relative">
+      {/* Desktop: arrows outside, Mobile: arrows inside with padding */}
+      <div className="relative px-6 md:px-0">
         {/* Navigation Buttons */}
         {canScrollPrev && (
           <button
             onClick={scrollPrev}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-[#F4A259]/20"
+            className="absolute left-4 md:-left-16 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-[#F4A259]/20 hidden md:flex items-center justify-center"
             aria-label="Previous stories"
           >
             <ChevronLeft size={24} className="text-[#F4A259]" />
@@ -243,7 +244,7 @@ export function NewsCarousel({ location = 'all' }: NewsCarouselProps) {
         {canScrollNext && (
           <button
             onClick={scrollNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-[#F4A259]/20"
+            className="absolute right-4 md:-right-16 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-[#F4A259]/20 hidden md:flex items-center justify-center"
             aria-label="Next stories"
           >
             <ChevronRight size={24} className="text-[#F4A259]" />
@@ -252,11 +253,11 @@ export function NewsCarousel({ location = 'all' }: NewsCarouselProps) {
 
         {/* Carousel */}
         <div ref={emblaRef} className="overflow-hidden">
-          <div className="flex gap-4">
+          <div className="flex gap-6 md:gap-4">
             {stories.map((story) => (
               <div
                 key={story.id}
-                className="min-w-0 shrink-0 grow-0 basis-[calc(33.333%-11px)]"
+                className="min-w-0 shrink-0 grow-0 basis-[90%] sm:basis-[70%] md:basis-[calc(33.333%-0.667rem)]"
               >
                 <div
                   onClick={() => setSelectedStory(story)}

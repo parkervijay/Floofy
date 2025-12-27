@@ -28,7 +28,7 @@ export function VideoCarousel({ videos }: VideoCarouselProps) {
 
     const autoplay = setInterval(() => {
       scrollNext();
-    }, 4000); // Change this number to adjust timing (4000ms = 4 seconds)
+    }, 9000); // Change this number to adjust timing (4000ms = 4 seconds)
 
     return () => clearInterval(autoplay);
   }, [emblaApi, scrollNext]);

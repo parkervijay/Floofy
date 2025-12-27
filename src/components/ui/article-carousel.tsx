@@ -492,12 +492,14 @@ interface ArticleCarouselProps {
 export function ArticleCarousel({ articles }: ArticleCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
-    align: 'start',
+    align: "start",
     skipSnaps: false,
   });
+
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
-  const [selectedArticle, setSelectedArticle] = useState<FullArticle | null>(null);
+  const [selectedArticle, setSelectedArticle] =
+    useState<FullArticle | null>(null);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -516,41 +518,43 @@ export function ArticleCarousel({ articles }: ArticleCarouselProps) {
   useEffect(() => {
     if (!emblaApi) return;
     onSelect();
-    emblaApi.on('select', onSelect);
-    emblaApi.on('reInit', onSelect);
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
   }, [emblaApi, onSelect]);
 
   return (
     <>
-      <div className="relative">
-        {/* Navigation Buttons */}
+      {/* OUTER RELATIVE WRAPPER (owns arrows + padding) */}
+      <div className="relative px-6 md:px-0">
+        {/* LEFT ARROW - Desktop: outside container, Mobile: inside */}
         {canScrollPrev && (
           <button
             onClick={scrollPrev}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-[#F4A259]/20"
+            className="absolute left-4 md:-left-16 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-[#F4A259]/20 hidden md:flex items-center justify-center"
             aria-label="Previous articles"
           >
             <ChevronLeft size={24} className="text-[#F4A259]" />
           </button>
         )}
 
+        {/* RIGHT ARROW - Desktop: outside container, Mobile: inside */}
         {canScrollNext && (
           <button
             onClick={scrollNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-[#F4A259]/20"
+            className="absolute right-4 md:-right-16 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-[#F4A259]/20 hidden md:flex items-center justify-center"
             aria-label="Next articles"
           >
             <ChevronRight size={24} className="text-[#F4A259]" />
           </button>
         )}
 
-        {/* Carousel */}
+        {/* EMBLA SCROLL AREA */}
         <div ref={emblaRef} className="overflow-hidden">
-          <div className="flex gap-4">
+          <div className="flex gap-6 md:gap-6">
             {articles.map((article) => (
               <div
                 key={article.id}
-                className="min-w-0 shrink-0 grow-0 basis-[calc(33.333%-11px)]"
+                className="shrink-0 grow-0 basis-[90%] sm:basis-[70%] md:basis-[calc(33.333%-1rem)]"
               >
                 <div
                   onClick={() => setSelectedArticle(article)}
@@ -570,7 +574,7 @@ export function ArticleCarousel({ articles }: ArticleCarouselProps) {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                   </div>
 
-                  <div className="p-6">
+                  <div className="p-6 sm:p-5 md:p-6">
                     <h3 className="text-xl font-bold text-[var(--charcoal)] mb-3 line-clamp-2 group-hover:text-[#F4A259] transition-all">
                       {article.title}
                     </h3>
@@ -588,6 +592,7 @@ export function ArticleCarousel({ articles }: ArticleCarouselProps) {
                         <span>{article.readTime}</span>
                       </div>
                     </div>
+
                     <div className="flex items-center gap-2 text-sm text-[var(--grey-medium)] mt-2">
                       <Calendar size={16} />
                       <span>{article.date}</span>
@@ -600,7 +605,7 @@ export function ArticleCarousel({ articles }: ArticleCarouselProps) {
         </div>
       </div>
 
-      {/* Article Modal */}
+      {/* ARTICLE MODAL */}
       {selectedArticle && (
         <ArticleModal
           article={selectedArticle}

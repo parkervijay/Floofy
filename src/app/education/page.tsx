@@ -7,6 +7,9 @@ import { VideoCarousel } from "@/components/ui/video-carousel";
 import type { Video, Article, Story } from "@/lib/education-api";
 import { ArticleCarousel, FULL_ARTICLES } from "@/components/ui/article-carousel";
 import { NewsCarousel } from "@/components/ui/news-carousel";
+import { AnimatedText } from "@/components/ui/animated-underline-text-one";
+import { SectionTitle } from "@/components/ui/section-title";
+import {RevealText}  from "@/components/ui/reveal-text";
 
 
 
@@ -78,122 +81,114 @@ const loadData = async () => {
   };
 
   return (
-    <main className="min-h-screen">
-      {/* Hero Section */}
-      <header className="page-header">
-        <div className="container">
-          <div className="relative inline-block">
-            <h1>Pet Education Hub</h1>
-          </div>
-          <p className="mt-4">
-            Everything you need to know about caring for your furry friends
-          </p>
-        </div>
-      </header>
+   <main className="min-h-screen">
+  <section className="py-12 px-6">
+    <div className="container">
+      {/* Education Header */}
+      
+<div className="text-center mt-[calc(var(--nav-height)+3rem)] mb-16">
+  <div data-native-cursor>
+  <RevealText
+    text="PetWise"
+    className="mt-[calc(var(--nav-height)+3rem)] mb-8"
+  />
+</div>
+</div>
+      {/* Educational Videos */}
+      <div className="text-center mb-10">
+        <AnimatedText
+          text="Educational Videos"
+          textClassName="text-4xl md:text-5xl"
+          underlineDuration={1.2}
+        />
+      </div>
 
-      {/* Videos Section */}
-      {/* Videos Section */}
+      <VideoCarousel videos={videos} />
+    </div>
+  </section>
+      {/* Articles */}
 <section className="py-12 px-6">
   <div className="container">
-    <div className="text-center mb-10">
-      <div className="flex items-center justify-center gap-3 mb-4">
-        <Play size={28} className="text-[#F4A259] relative -top-[28px]" />
-        <h2 className="section-title leading-tight">
-          Educational <span>Videos</span>
-        </h2>
-      </div>
-      <p className="text-lg text-[var(--grey-medium)]">
-        Learn from expert pet care tutorials and guides
-      </p>
+    {/* Articles Title */}
+    <div className="text-center mt-20 mb-10">
+      <AnimatedText
+        text="Pet Care Articles"
+        textClassName="text-4xl md:text-5xl"
+        underlineDuration={1.2}
+      />
     </div>
+    <div className="md:block">
+  <ArticleCarousel articles={FULL_ARTICLES} />
+</div>
 
-    <VideoCarousel videos={videos} />
   </div>
 </section>
 
-      {/* Articles Section */}
-      <section className="py-12 px-6">
-        <div className="container">
-          <div className="text-center mb-10">
-            <div className="flex items-center justify-center gap-3 mb-3">
-              <BookOpen className="text-[#F4A259] relative -top-[26.7px]" size={36} />
-              <h2 className="section-title inline-block mb-0">
-                Pet Care <span>Articles</span>
-              </h2>
-            </div>
-            <p className="text-lg text-[var(--grey-medium)]">
-              Expert advice and tips for happy, healthy pets
-            </p>
-          </div>
-
-          <ArticleCarousel articles={FULL_ARTICLES} />
-        </div>
-      </section>
-
       {/* FurryFeed Section */}
-      <section className="py-12 px-6">
+     <section className="py-12 px-6">
   <div className="container">
     <div className="text-center mb-10">
-      <div className="flex items-center justify-center gap-3 mb-3">
-        <Newspaper className="text-[#F4A259] relative -top-[29px]" size={40} />
-        <h2 className="section-title inline-block mb-0">
-          <span>FurryFeed</span>
-        </h2>
-      </div>
-      <p className="text-lg text-[var(--grey-medium)] mb-6">
-        Real-time heartwarming pet stories from around the world
-      </p>
+      <AnimatedText
+        text="FurryFeed"
+        textClassName="text-4xl md:text-5xl"
+        underlineDuration={1.2}
+      />
 
-      <div className="flex items-center justify-center gap-3 flex-wrap">
-        <button
-          onClick={() => setStoryFilter('all')}
-          className={`px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
-            storyFilter === 'all'
-              ? 'bg-[#F4A259] text-white shadow-lg scale-105'
-              : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
-          }`}
-        >
-          All Stories
-        </button>
-        <button
-          onClick={() => setStoryFilter('Bangalore')}
-          className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
-            storyFilter === 'Bangalore'
-              ? 'bg-blue-600 text-white shadow-lg scale-105'
-              : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
-          }`}
-        >
-          <Building2 size={18} />
-          Bangalore
-        </button>
-        <button
-          onClick={() => setStoryFilter('India')}
-          className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
-            storyFilter === 'India'
-              ? 'bg-orange-600 text-white shadow-lg scale-105'
-              : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
-          }`}
-        >
-          <Map size={18} />
-          India
-        </button>
-        <button
-          onClick={() => setStoryFilter('World')}
-          className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
-            storyFilter === 'World'
-              ? 'bg-[#F4A259] text-white shadow-lg scale-105'
-              : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
-          }`}
-        >
-          <Globe size={18} />
-          World
-        </button>
+      <div className="mt-7">
+        <div className="flex items-center justify-center gap-3 flex-wrap">
+          <button
+            onClick={() => setStoryFilter("all")}
+            className={`px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
+              storyFilter === "all"
+                ? "bg-[#F4A259] text-white shadow-lg scale-105"
+                : "bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20"
+            }`}
+          >
+            All Stories
+          </button>
+
+          <button
+            onClick={() => setStoryFilter("Bangalore")}
+            className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
+              storyFilter === "Bangalore"
+                ? "bg-blue-600 text-white shadow-lg scale-105"
+                : "bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20"
+            }`}
+          >
+            <Building2 size={18} />
+            Bangalore
+          </button>
+
+          <button
+            onClick={() => setStoryFilter("India")}
+            className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
+              storyFilter === "India"
+                ? "bg-orange-600 text-white shadow-lg scale-105"
+                : "bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20"
+            }`}
+          >
+            <Map size={18} />
+            India
+          </button>
+
+          <button
+            onClick={() => setStoryFilter("World")}
+            className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
+              storyFilter === "World"
+                ? "bg-[#F4A259] text-white shadow-lg scale-105"
+                : "bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20"
+            }`}
+          >
+            <Globe size={18} />
+            World
+          </button>
+        </div>
       </div>
     </div>
 
     <NewsCarousel location={storyFilter} />
   </div>
 </section>
-    </main>
+</main>
   );
 }

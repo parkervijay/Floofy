@@ -37,9 +37,18 @@ export default function CustomCursor() {
     if (!enabled) return;
 
     const handleMouseMove = (e: MouseEvent) => {
-      setPos({ x: e.clientX, y: e.clientY });
-      setVisible(true);
-    };
+  const target = e.target as HTMLElement;
+
+  // 🔥 If inside native cursor zone, disable custom cursor
+  if (target.closest("[data-native-cursor]")) {
+    setVisible(false);
+    return;
+  }
+
+  setPos({ x: e.clientX, y: e.clientY });
+  setVisible(true);
+};
+
 
     const handleMouseEnter = () => setVisible(true);
     const handleMouseLeave = () => setVisible(false);
