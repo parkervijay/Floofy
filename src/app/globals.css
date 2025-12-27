@@ -1471,3 +1471,268 @@ footer {
   opacity: 1;
   transform: translateY(0) scale(1);
 }
+
+/* Add these animations at the end of your globals.css file */
+
+/* Education Page Specific Animations */
+
+/* Smooth hover scale for cards */
+@keyframes floofy-hover-lift {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
+/* Gradient shimmer effect for buttons */
+@keyframes floofy-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* Pulse animation for icons */
+@keyframes floofy-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+/* Fade in from bottom */
+@keyframes floofy-fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide in from left */
+@keyframes floofy-slide-in-left {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide in from right */
+@keyframes floofy-slide-in-right {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Bounce in effect */
+@keyframes floofy-bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Glow pulse for active elements */
+@keyframes floofy-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(244, 162, 89, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(244, 162, 89, 0.6);
+  }
+}
+
+/* Rotating gradient border */
+@keyframes floofy-rotate-gradient {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Text gradient animation */
+@keyframes floofy-text-gradient {
+  0% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+  100% {
+    background-position: 0% center;
+  }
+}
+
+/* Staggered fade in for grid items */
+.education-grid-item {
+  animation: floofy-fade-in-up 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.education-grid-item:nth-child(1) { animation-delay: 0.1s; }
+.education-grid-item:nth-child(2) { animation-delay: 0.2s; }
+.education-grid-item:nth-child(3) { animation-delay: 0.3s; }
+.education-grid-item:nth-child(4) { animation-delay: 0.4s; }
+.education-grid-item:nth-child(5) { animation-delay: 0.5s; }
+.education-grid-item:nth-child(6) { animation-delay: 0.6s; }
+
+/* Hover effects for education cards */
+.education-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.education-card-hover:hover {
+  animation: floofy-hover-lift 0.3s ease-out forwards;
+}
+
+/* Active button with glow */
+.floofy-btn-active {
+  animation: floofy-glow-pulse 2s ease-in-out infinite;
+}
+
+/* Icon pulse on hover */
+.floofy-icon-pulse:hover {
+  animation: floofy-pulse 0.6s ease-in-out;
+}
+
+/* Shimmer effect for loading states */
+.floofy-shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    rgba(244, 162, 89, 0.1) 0%,
+    rgba(244, 162, 89, 0.3) 50%,
+    rgba(244, 162, 89, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: floofy-shimmer 2s ease-in-out infinite;
+}
+
+/* Smooth transitions for all interactive elements */
+.floofy-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.floofy-transition-slow {
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Border glow on focus */
+.floofy-focus-glow:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(244, 162, 89, 0.3);
+  border-color: #F4A259;
+}
+
+/* Gradient text animation */
+.floofy-gradient-text {
+  background: linear-gradient(
+    90deg,
+    #F4A259 0%,
+    #d88a3d 25%,
+    #F4A259 50%,
+    #d88a3d 75%,
+    #F4A259 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: floofy-text-gradient 3s ease-in-out infinite;
+}
+
+/* Floating animation for decorative elements */
+@keyframes floofy-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.floofy-float {
+  animation: floofy-float 3s ease-in-out infinite;
+}
+
+/* Scale on hover for interactive elements */
+.floofy-scale-hover {
+  transition: transform 0.3s ease;
+}
+
+.floofy-scale-hover:hover {
+  transform: scale(1.05);
+}
+
+/* Slide and fade for section headers */
+.section-header-animate {
+  animation: floofy-slide-in-left 0.8s ease-out;
+}
+
+/* Responsive animation adjustments */
+@media (max-width: 768px) {
+  .education-grid-item {
+    animation-duration: 0.4s;
+  }
+  
+  .education-card-hover:hover {
+    transform: translateY(-4px) scale(1.01);
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .education-grid-item,
+  .education-card-hover,
+  .floofy-icon-pulse,
+  .floofy-shimmer-bg,
+  .floofy-gradient-text,
+  .floofy-float,
+  .section-header-animate {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .education-grid-item {
+    opacity: 1 !important;
+  }
+}
+/* FIX heading + icon alignment across Education page */
+
+/*  */
+/* Optical alignment fix for icons next to serif headings */
+.heading-icon {
+  position: relative;
+  top: 0.08em; /* THIS is the key */
+}

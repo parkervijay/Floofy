@@ -1,327 +1,288 @@
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import { Play, Calendar, Clock, User, Newspaper, Globe, Map, Building2, BookOpen, Eye, Sparkles, GraduationCap } from 'lucide-react';
+import { fetchYouTubeVideos, fetchPetNews, fetchArticles, SAMPLE_VIDEOS, SAMPLE_ARTICLES, SAMPLE_STORIES } from '@/lib/education-api';
+import { VideoCarousel } from "@/components/ui/video-carousel";
+import type { Video, Article, Story } from "@/lib/education-api";
+
+
+
+
+// Configuration for future API integration
+const CONFIG = {
+  youtubeChannelId: 'YOUR_CHANNEL_ID', // Replace with your YouTube channel ID
+  youtubeApiKey: 'YOUR_API_KEY', // Replace with your YouTube API key
+  newsApiKey: 'YOUR_NEWS_API_KEY', // Replace with your News API key
+  articlesApiEndpoint: '/api/articles', // Your future articles API endpoint
+};
+
 export default function EducationPage() {
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [stories, setStories] = useState<Story[]>([]);
+  const [storyFilter, setStoryFilter] = useState<'all' | 'Bangalore' | 'India' | 'World'>('all');
+
+  useEffect(() => {
+  loadData();
+}, []);
+
+const loadData = async () => {
+  try {
+    const apiVideos = await fetchYouTubeVideos();
+
+    if (apiVideos.length > 0) {
+      setVideos(apiVideos);
+    } else {
+      setVideos(SAMPLE_VIDEOS);
+    }
+
+    setArticles(SAMPLE_ARTICLES);
+    setStories(SAMPLE_STORIES);
+  } catch (error) {
+    console.error("YouTube API failed, using fallback:", error);
+    setVideos(SAMPLE_VIDEOS);
+    setArticles(SAMPLE_ARTICLES);
+    setStories(SAMPLE_STORIES);
+  }
+};
+
+
+
+  const filteredStories = storyFilter === 'all' 
+    ? stories 
+    : stories.filter(story => story.location === storyFilter);
+
+  const getLocationIcon = (location: Story['location']) => {
+    switch (location) {
+      case 'Bangalore':
+        return <Building2 size={16} />;
+      case 'India':
+        return <Map size={16} />;
+      case 'World':
+        return <Globe size={16} />;
+    }
+  };
+
+  const getLocationColor = (location: Story['location']) => {
+    switch (location) {
+      case 'Bangalore':
+        return 'bg-blue-500';
+      case 'India':
+        return 'bg-orange-500';
+      case 'World':
+        return 'bg-[#F4A259]';
+    }
+  };
+
   return (
-    <main>
-      {/* Page header */}
+    <main className="min-h-screen">
+      {/* Hero Section */}
       <header className="page-header">
         <div className="container">
-          <h1>Education</h1>
-          <p>
-            Learn about responsible pet adoption, proper care techniques, and become
-            the best pet parent you can be.
+          <div className="relative inline-block">
+            <h1>Pet Education Hub</h1>
+          </div>
+          <p className="mt-4">
+            Everything you need to know about caring for your furry friends
           </p>
         </div>
       </header>
 
-      {/* Resource cards section */}
-      <section>
+      {/* Videos Section */}
+      {/* Videos Section */}
+<section className="py-12 px-6">
+  <div className="container">
+    <div className="text-center mb-10">
+      <div className="flex items-center justify-center gap-3 mb-4">
+        <Play size={28} className="text-[#F4A259] relative -top-[28px]" />
+        <h2 className="section-title leading-tight">
+          Educational <span>Videos</span>
+        </h2>
+      </div>
+      <p className="text-lg text-[var(--grey-medium)]">
+        Learn from expert pet care tutorials and guides
+      </p>
+    </div>
+
+    <VideoCarousel videos={videos} />
+  </div>
+</section>
+
+      {/* Articles Section */}
+      <section className="py-12 px-6">
         <div className="container">
-          <div className="resource-grid">
-            {/* Card 1 */}
-            <article className="resource-card">
-              <div className="resource-card-image">
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    background:
-                      "linear-gradient(135deg, #F4A259 0%, #d88a3d 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <svg
-                    width="60"
-                    height="60"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="1.5"
-                  >
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                  </svg>
-                </div>
-              </div>
-              <div className="resource-card-content">
-                <h3>Preparing your home for a rescue dog</h3>
-                <p>
-                  Essential tips on pet-proofing your space, creating comfort
-                  zones, and setting up feeding stations before bringing your new
-                  friend home.
-                </p>
-                <a href="#" className="resource-link">
-                  Watch on YouTube
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </a>
-              </div>
-            </article>
-
-            {/* Card 2 */}
-            <article className="resource-card">
-              <div className="resource-card-image">
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    background:
-                      "linear-gradient(135deg, #6e5c4a 0%, #4a3f35 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <svg
-                    width="60"
-                    height="60"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="1.5"
-                  >
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                </div>
-              </div>
-              <div className="resource-card-content">
-                <h3>The first 48 hours with your adopted pet</h3>
-                <p>
-                  What to expect during the initial adjustment period and how to
-                  help your new pet feel safe and comfortable in their new
-                  environment.
-                </p>
-                <a href="#" className="resource-link">
-                  Read more
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </a>
-              </div>
-            </article>
-
-            {/* Card 3 */}
-            <article className="resource-card">
-              <div className="resource-card-image">
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    background:
-                      "linear-gradient(135deg, #5c4d40 0%, #3d332b 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <svg
-                    width="60"
-                    height="60"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="1.5"
-                  >
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                  </svg>
-                </div>
-              </div>
-              <div className="resource-card-content">
-                <h3>Understanding rescue pet behavior</h3>
-                <p>
-                  Learn to recognize signs of anxiety, fear, and trauma in adopted
-                  pets, and discover techniques to help them heal and thrive.
-                </p>
-                <a href="#" className="resource-link">
-                  Watch on YouTube
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </a>
-              </div>
-            </article>
-
-            {/* Card 4 */}
-            <article className="resource-card">
-              <div className="resource-card-image">
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    background:
-                      "linear-gradient(135deg, #f8c89a 0%, #F4A259 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <svg
-                    width="60"
-                    height="60"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="1.5"
-                  >
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                    <polyline points="10 9 9 9 8 9"></polyline>
-                  </svg>
-                </div>
-              </div>
-              <div className="resource-card-content">
-                <h3>Nutrition guide for adopted pets</h3>
-                <p>
-                  Everything you need to know about feeding schedules, dietary
-                  requirements, and choosing the right food for your new
-                  companion.
-                </p>
-                <a href="#" className="resource-link">
-                  Read more
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </a>
-              </div>
-            </article>
-
-            {/* Card 5 */}
-            <article className="resource-card">
-              <div className="resource-card-image">
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    background:
-                      "linear-gradient(135deg, #4a3f35 0%, #2d2620 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <svg
-                    width="60"
-                    height="60"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="1.5"
-                  >
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                  </svg>
-                </div>
-              </div>
-              <div className="resource-card-content">
-                <h3>Introducing pets to family members</h3>
-                <p>
-                  Safe and effective strategies for introducing your adopted pet to
-                  children, other pets, and extended family members.
-                </p>
-                <a href="#" className="resource-link">
-                  Watch on YouTube
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </a>
-              </div>
-            </article>
-
-            {/* Card 6 */}
-            <article className="resource-card">
-              <div className="resource-card-image">
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    background:
-                      "linear-gradient(135deg, #d88a3d 0%, #c67a2d 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <svg
-                    width="60"
-                    height="60"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="1.5"
-                  >
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-                  </svg>
-                </div>
-              </div>
-              <div className="resource-card-content">
-                <h3>Healthcare essentials for new pet parents</h3>
-                <p>
-                  A comprehensive guide to vaccinations, regular check-ups, and
-                  preventive care to keep your adopted pet healthy and happy.
-                </p>
-                <a href="#" className="resource-link">
-                  Read more
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </a>
-              </div>
-            </article>
+          <div className="text-center mb-10">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <BookOpen className="text-[#F4A259] relative -top-[26.7px]" size={36} />
+              <h2 className="section-title inline-block mb-0">
+                Pet Care <span>Articles</span>
+              </h2>
+            </div>
+            <p className="text-lg text-[var(--grey-medium)]">
+              Expert advice and tips for happy, healthy pets
+            </p>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {articles.map((article) => (
+              <div
+                key={article.id}
+                className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-2 border-[#F4A259]/20 hover:border-[#F4A259]/40"
+              >
+                <div className="relative overflow-hidden h-48">
+                  <img
+                    src={article.image}
+                    alt={article.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span className="bg-[#F4A259] text-white text-xs px-4 py-1.5 rounded-full font-medium shadow-lg">
+                      {article.category}
+                    </span>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                </div>
+
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-[var(--charcoal)] mb-3 line-clamp-2 group-hover:text-[#F4A259] transition-all">
+                    {article.title}
+                  </h3>
+                  <p className="text-[var(--grey-medium)] mb-4 line-clamp-3">
+                    {article.excerpt}
+                  </p>
+
+                  <div className="flex items-center justify-between text-sm text-[var(--grey-medium)] pt-4 border-t border-gray-200">
+                    <div className="flex items-center gap-2">
+                      <User size={16} />
+                      <span className="font-medium">{article.author}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock size={16} />
+                      <span>{article.readTime}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-[var(--grey-medium)] mt-2">
+                    <Calendar size={16} />
+                    <span>{article.date}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FurryFeed Section */}
+      <section className="py-12 px-6">
+        <div className="container">
+          <div className="text-center mb-10">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <Newspaper className="text-[#F4A259] relative -top-[29px]" size={40} />
+              <h2 className="section-title inline-block mb-0">
+                <span>FurryFeed</span>
+              </h2>
+            </div>
+            <p className="text-lg text-[var(--grey-medium)] mb-6">
+              Weekly heartwarming stories from around the world
+            </p>
+
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <button
+                onClick={() => setStoryFilter('all')}
+                className={`px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
+                  storyFilter === 'all'
+                    ? 'bg-[#F4A259] text-white shadow-lg scale-105'
+                    : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
+                }`}
+              >
+                All Stories
+              </button>
+              <button
+                onClick={() => setStoryFilter('Bangalore')}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
+                  storyFilter === 'Bangalore'
+                    ? 'bg-blue-600 text-white shadow-lg scale-105'
+                    : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
+                }`}
+              >
+                <Building2 size={18} />
+                Bangalore
+              </button>
+              <button
+                onClick={() => setStoryFilter('India')}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
+                  storyFilter === 'India'
+                    ? 'bg-orange-600 text-white shadow-lg scale-105'
+                    : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
+                }`}
+              >
+                <Map size={18} />
+                India
+              </button>
+              <button
+                onClick={() => setStoryFilter('World')}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-md ${
+                  storyFilter === 'World'
+                    ? 'bg-[#F4A259] text-white shadow-lg scale-105'
+                    : 'bg-white text-[var(--charcoal)] hover:bg-gray-50 hover:shadow-lg border border-[#F4A259]/20'
+                }`}
+              >
+                <Globe size={18} />
+                World
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredStories.map((story) => (
+              <div
+                key={story.id}
+                className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-2 border-[#F4A259]/20 hover:border-[#F4A259]/40"
+              >
+                <div className="relative overflow-hidden h-56">
+                  <img
+                    src={story.image}
+                    alt={story.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute top-3 right-3">
+                    <span className={`${getLocationColor(story.location)} text-white text-xs px-3 py-1.5 rounded-full font-medium flex items-center gap-1 shadow-lg`}>
+                      {getLocationIcon(story.location)}
+                      {story.location}
+                    </span>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                </div>
+
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-[var(--charcoal)] mb-3 line-clamp-2 group-hover:text-[#F4A259] transition-all">
+                    {story.title}
+                  </h3>
+                  <p className="text-[var(--grey-medium)] mb-4 line-clamp-3">
+                    {story.summary}
+                  </p>
+
+                  <div className="flex items-center justify-between text-sm text-[var(--grey-medium)] pt-4 border-t border-gray-200">
+                    <div className="flex items-center gap-2">
+                      <Calendar size={16} />
+                      <span>{story.date}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Newspaper size={16} />
+                      <span className="font-medium">{story.source}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {filteredStories.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-[var(--grey-medium)] text-lg">No stories found for this location.</p>
+            </div>
+          )}
         </div>
       </section>
     </main>
