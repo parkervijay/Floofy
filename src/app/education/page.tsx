@@ -5,6 +5,7 @@ import { Play, Calendar, Clock, User, Newspaper, Globe, Map, Building2, BookOpen
 import { fetchYouTubeVideos, fetchPetNews, fetchArticles, SAMPLE_VIDEOS, SAMPLE_ARTICLES, SAMPLE_STORIES } from '@/lib/education-api';
 import { VideoCarousel } from "@/components/ui/video-carousel";
 import type { Video, Article, Story } from "@/lib/education-api";
+import { ArticleCarousel, FULL_ARTICLES } from "@/components/ui/article-carousel";
 
 
 
@@ -124,52 +125,7 @@ const loadData = async () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {articles.map((article) => (
-              <div
-                key={article.id}
-                className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-2 border-[#F4A259]/20 hover:border-[#F4A259]/40"
-              >
-                <div className="relative overflow-hidden h-48">
-                  <img
-                    src={article.image}
-                    alt={article.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <span className="bg-[#F4A259] text-white text-xs px-4 py-1.5 rounded-full font-medium shadow-lg">
-                      {article.category}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                </div>
-
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-[var(--charcoal)] mb-3 line-clamp-2 group-hover:text-[#F4A259] transition-all">
-                    {article.title}
-                  </h3>
-                  <p className="text-[var(--grey-medium)] mb-4 line-clamp-3">
-                    {article.excerpt}
-                  </p>
-
-                  <div className="flex items-center justify-between text-sm text-[var(--grey-medium)] pt-4 border-t border-gray-200">
-                    <div className="flex items-center gap-2">
-                      <User size={16} />
-                      <span className="font-medium">{article.author}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock size={16} />
-                      <span>{article.readTime}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-[var(--grey-medium)] mt-2">
-                    <Calendar size={16} />
-                    <span>{article.date}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <ArticleCarousel articles={FULL_ARTICLES} />
         </div>
       </section>
 
