@@ -257,7 +257,7 @@ export function NewsCarousel({ location = 'all' }: NewsCarouselProps) {
             {stories.map((story) => (
               <div
                 key={story.id}
-                className="min-w-0 shrink-0 grow-0 basis-[90%] sm:basis-[70%] md:basis-[calc(33.333%-0.667rem)]"
+                className="min-w-0 shrink-0 grow-0 basis-full sm:basis-[70%] md:basis-[calc(33.333%-0.667rem)]"
               >
                 <div
                   onClick={() => setSelectedStory(story)}

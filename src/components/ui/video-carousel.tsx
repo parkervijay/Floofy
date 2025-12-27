@@ -54,13 +54,13 @@ export function VideoCarousel({ videos }: VideoCarouselProps) {
   };
 
   return (
-    <div className="relative">
+    <div className="relative px-6 md:px-0">
       <div ref={emblaRef} className="overflow-hidden">
-        <div className="flex gap-6">
+        <div className="flex gap-6 md:gap-6">
           {videos.map((video) => (
             <div
               key={video.id}
-              className="min-w-0 shrink-0 grow-0 basis-full md:basis-1/2 lg:basis-1/3"
+              className="min-w-0 shrink-0 grow-0 basis-full md:basis-[calc(33.333%-1rem)]"
             >
               <div
                 onClick={() => handleVideoClick(video.youtubeId)}

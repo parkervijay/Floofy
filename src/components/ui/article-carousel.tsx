@@ -560,7 +560,7 @@ export function ArticleCarousel({ articles }: ArticleCarouselProps) {
                   onClick={() => setSelectedArticle(article)}
                   className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-2 border-[#F4A259]/20 hover:border-[#F4A259]/40 h-full"
                 >
-                  <div className="relative overflow-hidden h-48">
+                  <div className="relative overflow-hidden h-56">
                     <img
                       src={article.image}
                       alt={article.title}
@@ -574,28 +574,29 @@ export function ArticleCarousel({ articles }: ArticleCarouselProps) {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                   </div>
 
-                  <div className="p-6 sm:p-5 md:p-6">
-                    <h3 className="text-xl font-bold text-[var(--charcoal)] mb-3 line-clamp-2 group-hover:text-[#F4A259] transition-all">
+                  <div className="p-5">
+                    <h3 className="text-lg font-bold text-[var(--charcoal)] mb-2 line-clamp-2 group-hover:text-[#F4A259] transition-all">
                       {article.title}
                     </h3>
-                    <p className="text-[var(--grey-medium)] mb-4 line-clamp-3">
+                    <p className="text-sm text-[var(--grey-medium)] mb-3 line-clamp-2">
                       {article.excerpt}
                     </p>
 
-                    <div className="flex items-center justify-between text-sm text-[var(--grey-medium)] pt-4 border-t border-gray-200">
+                    <div className="flex flex-col gap-2 text-sm text-[var(--grey-medium)]">
                       <div className="flex items-center gap-2">
                         <User size={16} />
                         <span className="font-medium">{article.author}</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Clock size={16} />
-                        <span>{article.readTime}</span>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Clock size={16} />
+                          <span>{article.readTime}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Calendar size={16} />
+                          <span>{article.date}</span>
+                        </div>
                       </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm text-[var(--grey-medium)] mt-2">
-                      <Calendar size={16} />
-                      <span>{article.date}</span>
                     </div>
                   </div>
                 </div>
