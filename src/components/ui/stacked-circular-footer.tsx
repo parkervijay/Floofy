@@ -2,18 +2,21 @@ import { Icons } from "@/components/ui/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Facebook, Instagram, Linkedin } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { AnimatedDock } from "@/components/ui/animated-dock"
+import { Facebook, Instagram, Linkedin, X } from "lucide-react"
+
+
+
 
 
 
 function StackedCircularFooter() {
   return (
-    <footer className="relative mt-24 bg-gradient-to-b from-[#FFF8F1] via-[#FFE7CF] to-[#FFD3A6]">
-      <div className="container mx-auto px-4 py-16">
-        <div className="flex flex-col items-center text-center gap-10">
-
+   <footer className="relative mt-5 bg-gradient-to-b from-[#FFF8F1] via-[#FFE7CF] to-[#FFD3A6]">
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex flex-col items-center text-center gap-4">
           {/* Brand */}
           <div className="relative">
             <div className="absolute inset-0 rounded-full bg-[#F4A259]/20 blur-xl" />
@@ -36,22 +39,37 @@ function StackedCircularFooter() {
           </nav> */}
 
           {/* Social */}
-          <div className="flex gap-4">
-            {[Facebook, Icons.x, Instagram, Linkedin].map((Icon, i) => (
-              <Button
-                key={i}
-                variant="outline"
-                size="icon"
-                className="rounded-full border-[#F4A259]/30 text-[#F4A259] hover:bg-[#F4A259]/10"
-              >
-                <Icon className="h-4 w-4" />
-              </Button>
-            ))}
-          </div>
+          <div className="flex justify-center">
+  <AnimatedDock
+    className="bg-transparent border-none shadow-none px-0 pb-0"
+    items={[
+      {
+        link: "https://facebook.com",
+        target: "_blank",
+        Icon: <Facebook size={18} />,
+      },
+      {
+        link: "https://x.com",
+        target: "_blank",
+        Icon: <X size={18} />,
+      },
+      {
+        link: "https://instagram.com",
+        target: "_blank",
+        Icon: <Instagram size={18} />,
+      },
+      {
+        link: "https://linkedin.com",
+        target: "_blank",
+        Icon: <Linkedin size={18} />,
+      },
+    ]}
+  />
+</div>
           {/* Contact */}
 
           {/* Footer note */}
-         <div className="text-xs text-[#7A4A1F]/60 text-center space-y-1">
+         <div className="text-[15px] text-[#7A4A1F]/60 text-center space-y-1">
   <p>
     © {new Date().getFullYear()} Floofy  
     <br />
