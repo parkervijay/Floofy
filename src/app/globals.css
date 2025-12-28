@@ -1736,3 +1736,14 @@ footer {
   position: relative;
   top: 0.08em; /* THIS is the key */
 }
+@theme inline {
+  --color-destructive-foreground: var(--destructive-foreground);
+}
+
+:root {
+  --destructive-foreground: oklch(0.205 0 0);
+}
+
+.dark {
+  --destructive-foreground: oklch(0.985 0 0);
+}

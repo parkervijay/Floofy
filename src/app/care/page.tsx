@@ -1,6 +1,86 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { ReportIncidentForm } from "@/components/care/ReportIncidentForm";
+import { Alert, AlertIcon, AlertTitle } from "@/components/ui/alert-1";
+import { CheckCircle2, AlertCircle } from "lucide-react";
+
+type AlertType = "success" | "destructive";
+
 export default function CarePage() {
+  const [alert, setAlert] = useState<{
+    type: AlertType;
+    message: string;
+  } | null>(null);
+
+  // Lock scroll when alert is visible
+  useEffect(() => {
+    if (alert) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      
+      // Lock scroll
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+    } else {
+      // Unlock scroll and restore position
+      const scrollY = document.body.style.top;
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      
+      // Restore scroll position
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+    };
+  }, [alert]);
+
+  const handleCloseAlert = () => {
+    setAlert(null);
+  };
+
   return (
     <main>
+      {/* Overlay backdrop when alert is visible */}
+      {alert && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+          onClick={handleCloseAlert}
+        />
+      )}
+
+      {/* Fixed Alert at top of page */}
+      {alert && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4 animate-in slide-in-from-top duration-300">
+          <Alert 
+            variant={alert.type} 
+            appearance="light" 
+            close 
+            onClose={handleCloseAlert}
+            className="shadow-lg"
+          >
+            <AlertIcon>
+              {alert.type === "success" ? (
+                <CheckCircle2 className="size-5" />
+              ) : (
+                <AlertCircle className="size-5" />
+              )}
+            </AlertIcon>
+            <AlertTitle>{alert.message}</AlertTitle>
+          </Alert>
+        </div>
+      )}
+
       {/* Page header */}
       <header className="page-header">
         <div className="container">
@@ -43,53 +123,14 @@ export default function CarePage() {
 
             {/* REPORT INCIDENT CARD */}
             <div className="care-card">
-              <h2>Report a safety incident</h2>
+              <h2>Report Animal Suffering</h2>
               <p>
                 If you've witnessed animal abuse, neglect, or any concerning situation involving
                 an adopted pet, please report it immediately. Your report helps us ensure the safety
                 and well-being of all animals.
               </p>
 
-              <form id="incident-form">
-                <div className="form-group">
-                  <label>Your name</label>
-                  <input type="text" placeholder="Enter your full name" required />
-                </div>
-
-                <div className="form-group">
-                  <label>Email address</label>
-                  <input type="email" placeholder="Enter your email" required />
-                </div>
-
-                <div className="form-group">
-                  <label>Incident description</label>
-                  <textarea
-                    placeholder="Please describe the incident in detail..."
-                    required
-                  ></textarea>
-                </div>
-
-                <button type="submit" className="btn-primary">
-                  Submit report
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                  </svg>
-                </button>
-              </form>
-
-              {/* Success Message */}
-              <div className="success-message">
-                Thank you for your report. We take all incidents seriously and will review your
-                submission promptly. Our team will contact you if additional information is needed.
-              </div>
+              <ReportIncidentForm onAlert={setAlert} />
             </div>
 
           </div>
