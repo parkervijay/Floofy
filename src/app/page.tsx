@@ -87,9 +87,9 @@ export default function Home() {
       <section className="mt-16 md:mt-0">
   <div className="container">
     <h2 className="section-title">
-      Why adoption is <span>better</span> than buying
+      <span className="text-[#F4A259] font-bold">#ADOPT</span>
+      <span className="!text-black font-semibold" style={{ color: '#000000' }}>, Don't Buy</span>
     </h2>
-
     <div className="adoption-tiles">
       {/* TILE 1 */}
       <div className="adoption-tile relative overflow-hidden group hover-shake">

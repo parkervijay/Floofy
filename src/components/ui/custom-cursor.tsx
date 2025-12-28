@@ -8,9 +8,6 @@ interface Pos {
 }
 
 export default function CustomCursor() {
-  if (typeof window !== "undefined" && window.innerWidth < 768) {
-  return null;
-}
   const [pos, setPos] = useState<Pos>({ x: 0, y: 0 });
   const [visible, setVisible] = useState(false);
   const [active, setActive] = useState(false);
@@ -21,6 +18,11 @@ export default function CustomCursor() {
   // 1) Detect device type AFTER mount (client only)
   useEffect(() => {
     if (typeof window === "undefined") return;
+    
+    // Skip on mobile to prevent hydration mismatch
+    if (window.innerWidth < 768) {
+      return;
+    }
 
     const isTouch = window.matchMedia(
       "(hover: none) and (pointer: coarse)"

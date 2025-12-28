@@ -373,9 +373,12 @@ export const FULL_ARTICLES: FullArticle[] = [
 // Article Modal Component
 function ArticleModal({ article, onClose }: { article: FullArticle; onClose: () => void }) {
   useEffect(() => {
+    if (typeof document === "undefined") return;
     document.body.style.overflow = 'hidden';
     return () => {
-      document.body.style.overflow = 'unset';
+      if (typeof document !== "undefined") {
+        document.body.style.overflow = 'unset';
+      }
     };
   }, []);
 

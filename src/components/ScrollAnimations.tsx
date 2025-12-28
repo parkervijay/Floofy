@@ -7,6 +7,8 @@ export default function ScrollAnimations() {
   const pathname = usePathname();
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
+    
     // Small delay ensures new page DOM is mounted
     const timeout = setTimeout(() => {
       const elements = document.querySelectorAll(

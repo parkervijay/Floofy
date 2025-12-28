@@ -19,14 +19,15 @@ const samplePets = [
 export default function LegacyScripts() {
   useEffect(() => {
     // ------- helpers: read browser state safely -------
+    if (typeof window === "undefined" || typeof document === "undefined") return;
+    
     const prefersReducedMotion =
-      typeof window !== "undefined" &&
       window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const isTouchDevice =
-      typeof window !== "undefined" &&
-      ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+      "ontouchstart" in window || 
+      (typeof navigator !== "undefined" && navigator.maxTouchPoints > 0);
 
     // ------- original script.js logic, adapted -------
 
@@ -85,6 +86,7 @@ export default function LegacyScripts() {
       let lastTrailTime = 0;
       let lastParticleTime = 0;
       let isVisible = true;
+      let animationFrameId: number | null = null;
 
       function createTrailDot(x: number, y: number) {
         if (prefersReducedMotion) return;
@@ -113,7 +115,7 @@ export default function LegacyScripts() {
         setTimeout(() => particle.remove(), 1000);
       }
 
-      document.addEventListener("mousemove", (e) => {
+      const handleMouseMove = (e: MouseEvent) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
         cursor.style.opacity = "1";
@@ -130,25 +132,42 @@ export default function LegacyScripts() {
           createParticle(mouseX, mouseY);
           lastParticleTime = now;
         }
-      });
+      };
 
-      document.addEventListener("mouseleave", () => {
+      const handleMouseLeave = () => {
         cursor.style.opacity = "0";
         isVisible = false;
-      });
+      };
 
       function animateCursor() {
-        if (!isVisible) return;
+        if (!isVisible) {
+          animationFrameId = null;
+          return;
+        }
 
         cursorX += (mouseX - cursorX) * 0.2;
         cursorY += (mouseY - cursorY) * 0.2;
 
         cursor.style.transform = `translate(${cursorX - 16}px, ${cursorY - 16}px)`;
 
-        requestAnimationFrame(animateCursor);
+        animationFrameId = requestAnimationFrame(animateCursor);
       }
 
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseleave", handleMouseLeave);
       animateCursor();
+
+      // Return cleanup function
+      return () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseleave", handleMouseLeave);
+        if (animationFrameId !== null) {
+          cancelAnimationFrame(animationFrameId);
+        }
+        if (cursor.parentNode) {
+          cursor.parentNode.removeChild(cursor);
+        }
+      };
     }
 
     function initMobileMenu() {
@@ -156,17 +175,27 @@ export default function LegacyScripts() {
       const navLinks = document.querySelector(".nav-links") as HTMLElement | null;
 
       if (menuBtn && navLinks) {
-        menuBtn.addEventListener("click", () => {
+        const handleMenuClick = () => {
           navLinks.classList.toggle("active");
-        });
-
-        document.addEventListener("click", (e) => {
+        };
+        
+        const handleDocumentClick = (e: Event) => {
           const target = e.target as Node;
           if (!menuBtn.contains(target) && !navLinks.contains(target)) {
             navLinks.classList.remove("active");
           }
-        });
+        };
+
+        menuBtn.addEventListener("click", handleMenuClick);
+        document.addEventListener("click", handleDocumentClick);
+
+        // Return cleanup function
+        return () => {
+          menuBtn.removeEventListener("click", handleMenuClick);
+          document.removeEventListener("click", handleDocumentClick);
+        };
       }
+      return () => {};
     }
 
     function initScrollAnimations() {
@@ -265,7 +294,7 @@ export default function LegacyScripts() {
       const nextBtn = document.querySelector(".carousel-btn.next") as HTMLElement | null;
       const dots = document.querySelectorAll(".carousel-dot");
 
-      if (!carousel || !prevBtn || !nextBtn || dots.length === 0) return;
+      if (!carousel || !prevBtn || !nextBtn || dots.length === 0) return () => {};
 
       const cardWidth = 280 + 24; // width + gap (from your CSS)
       let currentIndex = 0;
@@ -282,29 +311,52 @@ export default function LegacyScripts() {
         });
       }
 
-      prevBtn.addEventListener("click", () => {
+      const handlePrevClick = () => {
         updateCarousel(currentIndex - 1);
-      });
+      };
 
-      nextBtn.addEventListener("click", () => {
+      const handleNextClick = () => {
         updateCarousel(currentIndex + 1);
+      };
+
+      const dotHandlers: Array<() => void> = [];
+      dots.forEach((dot, i) => {
+        const handleDotClick = () => {
+          updateCarousel(i);
+        };
+        dot.addEventListener("click", handleDotClick);
+        dotHandlers.push(handleDotClick);
       });
 
-      dots.forEach((dot, i) => {
-        dot.addEventListener("click", () => {
-          updateCarousel(i);
+      prevBtn.addEventListener("click", handlePrevClick);
+      nextBtn.addEventListener("click", handleNextClick);
+
+      // Return cleanup function
+      return () => {
+        prevBtn.removeEventListener("click", handlePrevClick);
+        nextBtn.removeEventListener("click", handleNextClick);
+        dots.forEach((dot, i) => {
+          dot.removeEventListener("click", dotHandlers[i]);
         });
-      });
+      };
     }
 
     function initIncidentForm() {
       const form = document.getElementById("incident-form") as HTMLFormElement | null;
       const successMessage = document.querySelector(".success-message") as HTMLElement | null;
 
-      if (!form || !successMessage) return;
+      if (!form || !successMessage) return () => {};
 
-      form.addEventListener("submit", (e) => {
+      let timeoutId: NodeJS.Timeout | null = null;
+
+      const handleSubmit = (e: Event) => {
         e.preventDefault();
+
+        // Clear any existing timeout
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
+        }
 
         if (prefersReducedMotion) {
           successMessage.classList.add("show");
@@ -314,41 +366,58 @@ export default function LegacyScripts() {
 
         successMessage.classList.remove("show");
 
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           successMessage.classList.add("show");
           form.reset();
+          timeoutId = null;
         }, 150);
-      });
+      };
+
+      form.addEventListener("submit", handleSubmit);
+
+      // Return cleanup function
+      return () => {
+        form.removeEventListener("submit", handleSubmit);
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
+        }
+      };
     }
     // ------- Scroll reveal elements -------
-const revealTargets = document.querySelectorAll(
-  ".pet-card, .adoption-tile, .feature-card, .resource-card, .care-card, .phone-mockup"
-);
+    const revealTargets = document.querySelectorAll(
+      ".pet-card, .adoption-tile, .feature-card, .resource-card, .care-card, .phone-mockup"
+    );
 
-const revealObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  },
-  { threshold: 0.2 }
-);
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
 
-revealTargets.forEach((el) => revealObserver.observe(el));
-
+    revealTargets.forEach((el) => revealObserver.observe(el));
 
     // ---- run everything once on mount ----
     initLoader();
-    initCursor();
-    initMobileMenu();
+    const cursorCleanup = initCursor();
+    const menuCleanup = initMobileMenu();
     initScrollAnimations();
     initPetsCarousel();
-    initIncidentForm();
+    const formCleanup = initIncidentForm();
 
-    // no cleanup for now (OK for this simple site)
+    // Cleanup all listeners and observers
+    return () => {
+      if (cursorCleanup) cursorCleanup();
+      if (menuCleanup) menuCleanup();
+      if (formCleanup) formCleanup();
+      revealObserver.disconnect();
+    };
   }, []);
 
   return null;

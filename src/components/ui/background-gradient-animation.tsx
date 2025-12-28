@@ -44,7 +44,7 @@ export const BackgroundGradientAnimation = ({
 
   // ✅ Apply CSS variables AFTER mount
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || typeof document === "undefined") return;
 
     const root = document.documentElement;
 
