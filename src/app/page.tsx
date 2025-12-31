@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 import { AdoptionStepsPopover } from "@/components/ui/adoption-steps-popover"
 import { StatCard } from "@/components/ui/card-10";
 import { ArrowUpRight } from "lucide-react";
-
+import { CarouselCircularImageGallery } from "@/components/ui/carousel-circular-image-gallery";
 
 
 
@@ -36,6 +36,46 @@ export default function Home() {
     },
   ];
   
+  // Pet data for the circular gallery (desktop)
+const desktopPetData = [
+  {
+    image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80",
+    breed: "Golden Retriever",
+    age: "2 years",
+    status: "Available" as const,
+  },
+  {
+    image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&q=80",
+    breed: "Husky",
+    age: "3 years",
+    status: "Available" as const,
+  },
+  {
+    image: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600&q=80",
+    breed: "Beagle",
+    age: "1 year",
+    status: "Adopted" as const,
+  },
+  {
+    image: "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=600&q=80",
+    breed: "Labrador",
+    age: "4 years",
+    status: "Available" as const,
+  },
+  {
+    image: "https://images.unsplash.com/photo-1517849845537-4d257902454a?w=600&q=80",
+    breed: "Poodle",
+    age: "2 years",
+    status: "Available" as const,
+  },
+  {
+    image: "https://images.unsplash.com/photo-1534351450181-ea9f78427fe8?w=600&q=80",
+    breed: "Corgi",
+    age: "3 years",
+    status: "Adopted" as const,
+  },
+];
+
   return (
     <main className="min-h-screen">
       {/* HERO SECTION */}
@@ -52,11 +92,13 @@ export default function Home() {
     Available for <span>adoption</span>
   </h2>
 
-  {/* Gallery (unchanged) */}
+  {/* Gallery - NEW: Desktop uses CircularGallery, Mobile stays the same */}
   <div className="relative h-[520px] md:h-[800px] overflow-visible">
     {!isMobile ? (
-      <IntroAnimation />
+      // ✅ NEW: Desktop uses the circular gallery
+      <CarouselCircularImageGallery pets={desktopPetData} />
     ) : (
+      // ✅ UNCHANGED: Mobile keeps your existing component
       <div style={{ transform: "translateY(+2.25rem)" }}>
         <CircularGalleryMobile items={mobileItems} />
       </div>
@@ -64,22 +106,22 @@ export default function Home() {
   </div>
 
   {/* Mobile title */}
- <h2
-  className="section-title text-center mt-0 mb-6 md:hidden"
-  style={{ transform: "translateY(-19.5rem)" }}
->
-  Available for <span>adoption</span>
-</h2>
+  <h2
+    className="section-title text-center mt-0 mb-6 md:hidden"
+    style={{ transform: "translateY(-19.5rem)" }}
+  >
+    Available for <span>adoption</span>
+  </h2>
 
   <div
-  className="mt-6 flex justify-center"
-  style={{
-    transform: isMobile ? "translateY(-19.5rem)" : "none",
-    marginBottom: isMobile ? "-29.5rem" : "0",
-  }}
->
-  <AdoptionStepsPopover />
-</div>
+    className="mt-6 flex justify-center"
+    style={{
+      transform: isMobile ? "translateY(-19.5rem)" : "none",
+      marginBottom: isMobile ? "-29.5rem" : "0",
+    }}
+  >
+    <AdoptionStepsPopover />
+  </div>
 </section>
 
 
