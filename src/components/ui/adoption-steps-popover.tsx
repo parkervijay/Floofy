@@ -11,13 +11,13 @@ export function AdoptionStepsPopover() {
 
   return (
     <PopoverForm
-     title={
-  <div className="rounded-full border border-[#F4A259]/30 bg-[#FFF7F0] px-4 py-1">
-    <AnimatedShinyText>
-      Know more about adoption →
-    </AnimatedShinyText>
-  </div>
-}
+      title={
+        <div className="rounded-full border-2 border-[#F4A259]/40 bg-[#FFF7F0] px-6 py-3 md:px-8 md:py-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer">
+          <AnimatedShinyText className="text-base md:text-lg font-semibold">
+            Know more about adoption →
+          </AnimatedShinyText>
+        </div>
+      }
       open={open}
       setOpen={setOpen}
       width="420px"
