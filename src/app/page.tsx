@@ -6,8 +6,9 @@ import dynamic from "next/dynamic";
 import { AdoptionStepsPopover } from "@/components/ui/adoption-steps-popover";
 import { StatCard } from "@/components/ui/card-10";
 import { ArrowUpRight } from "lucide-react";
-import RetroTVCarousel from "@/components/ui/RetroTVCarousel";
-import type { PetCarouselItem } from "@/components/ui/RetroTVCarousel";
+import { FloofyPremiumCarousel } from "@/components/ui/floofy-premium-carousel";
+import { useRef, useState, useEffect } from "react";
+
 
 const IntroAnimation = dynamic(
   () => import("@/components/ui/scroll-morph-hero"),
@@ -16,6 +17,16 @@ const IntroAnimation = dynamic(
 
 export default function Home() {
   const { isMobile } = useDevice();
+  const [showAppAlert, setShowAppAlert] = useState(false);
+const appDownloadRef = useRef<HTMLDivElement | null>(null);
+
+useEffect(() => {
+  const handler = () => setShowAppAlert(true);
+
+  window.addEventListener("floofy-open-app-alert", handler);
+  return () => window.removeEventListener("floofy-open-app-alert", handler);
+}, []);
+
   
   const mobileItems = [
     {
@@ -34,53 +45,6 @@ export default function Home() {
       age: "3 years",
     },
   ];
-  
-  // Pet data for the retro TV carousel (desktop)
-  // Pet data for the retro TV carousel (desktop)
-const desktopPetData: PetCarouselItem[] = [
-  {
-    image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80",
-    breed: "Golden Retriever",
-    age: "2 years old",
-    status: "Available",
-    id: 1,
-  },
-  {
-    image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800&q=80",
-    breed: "Husky",
-    age: "3 years old",
-    status: "Available",
-    id: 2,
-  },
-  {
-    image: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&q=80",
-    breed: "Beagle",
-    age: "1 year old",
-    status: "Adopted",
-    id: 3,
-  },
-  {
-    image: "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=800&q=80",
-    breed: "Labrador",
-    age: "4 years old",
-    status: "Available",
-    id: 4,
-  },
-  {
-    image: "https://images.unsplash.com/photo-1517849845537-4d257902454a?w=800&q=80",
-    breed: "Poodle",
-    age: "2 years old",
-    status: "Available",
-    id: 5,
-  },
-  {
-    image: "https://images.unsplash.com/photo-1534351450181-ea9f78427fe8?w=800&q=80",
-    breed: "Corgi",
-    age: "3 years old",
-    status: "Adopted",
-    id: 6,
-  },
-];
 
   return (
     <main className="min-h-screen overflow-x-hidden">
@@ -94,7 +58,7 @@ const desktopPetData: PetCarouselItem[] = [
       </section>
 
       {/* ========================================
-          AVAILABLE FOR ADOPTION - NEW RETRO TV CAROUSEL
+          AVAILABLE FOR ADOPTION - PREMIUM CAROUSEL
       ======================================== */}
       <section className="relative w-full py-8 md:py-16">
         <div className="container">
@@ -104,24 +68,16 @@ const desktopPetData: PetCarouselItem[] = [
           </h2>
 
           {/* Gallery Container */}
-          <div className="relative w-full">
             {!isMobile ? (
-              // ✅ NEW: Desktop uses the retro TV carousel
-              <RetroTVCarousel 
-                pets={desktopPetData}
-                baseWidth={520}
-                autoplay={true}
-                autoplayDelay={5000}
-                pauseOnHover={true}
-                loop={true}
-              />
+              // ✅ Desktop: New Premium Floofy carousel
+              <FloofyPremiumCarousel />
             ) : (
-              // ✅ UNCHANGED: Mobile keeps your existing component
+              // ✅ Mobile: Circular gallery (unchanged)
               <div className="w-full py-8">
                 <CircularGalleryMobile items={mobileItems} />
               </div>
             )}
-          </div>
+          
 
           {/* Mobile title */}
           <h2 className="section-title text-center mt-8 mb-6 md:hidden">
@@ -140,7 +96,7 @@ const desktopPetData: PetCarouselItem[] = [
       ======================================== */}
       <section className="py-16 md:py-24">
         <div className="container">
-          <h2 className="section-title text-center md:text-left mb-8 md:mb-12">
+          <h2 className="section-title text-center mb-8 md:mb-12">
             <span className="text-[#F4A259] font-bold">#ADOPT</span>
             <span className="!text-black font-semibold" style={{ color: '#000000' }}>, Don't Buy</span>
           </h2>
@@ -306,7 +262,10 @@ const desktopPetData: PetCarouselItem[] = [
       {/* ========================================
           APP PREVIEW - Bottom section with perfect spacing
       ======================================== */}
-      <section className="py-16 md:py-24 bg-gradient-to-b from-[#F4A259]/5 to-transparent">
+      <section 
+        ref={appDownloadRef}
+        className="py-16 md:py-24 bg-gradient-to-b from-[#F4A259]/5 to-transparent"
+      >
         <div className="container">
           <h2 className="section-title text-center mb-10 md:mb-16">
             Experience the <span>Floofy</span> app
@@ -352,9 +311,12 @@ const desktopPetData: PetCarouselItem[] = [
             </div>
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-4 flex-wrap">
+            {/* App Store Button */}
             <a 
-              href="#" 
+              href="https://apps.apple.com/in/app/floofy/id6749371157"
+              target="_blank"
+              rel="noopener noreferrer"
               className="store-btn transition-transform duration-300 hover:scale-105 active:scale-95"
             >
               <svg viewBox="0 0 24 24" fill="currentColor">
@@ -365,12 +327,63 @@ const desktopPetData: PetCarouselItem[] = [
                 <span>App Store</span>
               </div>
             </a>
+
+            {/* Google Play Store Button */}
+            <a 
+              href="https://play.google.com/store/apps/details?id=com.floofy.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="store-btn transition-transform duration-300 hover:scale-105 active:scale-95"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.5,12.92 20.16,13.19L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" />
+              </svg>
+              <div className="store-btn-text">
+                <small>Get it on</small>
+                <span>Google Play</span>
+              </div>
+            </a>
           </div>
         </div>
       </section>
 
       {/* Bottom padding for breathing room */}
       <div className="h-16 md:h-24"></div>
+      {showAppAlert && (
+  <div className="fixed inset-0 z-50">
+    <div
+      className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+      onClick={() => setShowAppAlert(false)}
+    />
+
+    <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
+      <div className="bg-white rounded-2xl p-6 w-[90%] max-w-sm shadow-xl text-center">
+        <h3 className="text-xl font-bold mb-2">
+          Explore on the Floofy App 🐾
+        </h3>
+
+        <p className="text-gray-600 mb-6">
+          Full pet profiles, multiple photos, and adoption details are available on the Floofy app.
+        </p>
+
+        <button
+          onClick={() => {
+            setShowAppAlert(false);
+            setTimeout(() => {
+              window.scrollTo({
+                top: document.documentElement.scrollHeight,
+                behavior: "smooth",
+              });
+            }, 150);
+          }}
+          className="w-full rounded-xl bg-[#F4A259] text-white py-3 font-semibold hover:opacity-90 transition"
+        >
+          Got it, show me
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </main>
   );
 }

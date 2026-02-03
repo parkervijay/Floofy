@@ -1,0 +1,12 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+      branch:
+            -master
+
+jobs:
+  name:test
+        run:npm run dev
+
+

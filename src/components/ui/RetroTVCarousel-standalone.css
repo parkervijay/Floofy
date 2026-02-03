@@ -1,7 +1,6 @@
 /* ========================================
    RETRO TV CAROUSEL - FLOOFY EDITION
-   Clean, larger screen, clearer image
-   (Color tone preserved)
+   Perfect image fitting for any size
 ======================================== */
 
 /* CSS Variables - Scoped to carousel only */
@@ -189,7 +188,7 @@
 .retro-carousel-track {
   position: absolute;
   top: 0;
-  left: 40px;
+  left: 0;
   height: 100%;
   display: flex;
   cursor: grab;
@@ -202,7 +201,7 @@
 }
 
 /* ========================================
-   PET CARD
+   PET CARD - PERFECT IMAGE FITTING
 ======================================== */
 
 .retro-pet-card {
@@ -215,23 +214,60 @@
   will-change: transform;
 }
 
-/* Pet Image Container */
+/* Pet Image Container - Flex centering for perfect fit */
 .retro-pet-image-container {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
   background: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Clear Image - any size covers screen */
+/* Perfect Image Fitting - Works with ANY size/aspect ratio */
 .retro-pet-image {
+  /* Dimensions */
   width: 100%;
   height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  
+  /* Perfect fitting */
   object-fit: cover;
   object-position: center;
+  
+  /* High quality rendering */
   filter: none;
-  image-rendering: auto;
+  image-rendering: -webkit-optimize-contrast;
+  
+  /* GPU acceleration for smooth performance */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  
+  /* Prevent image artifacts */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Prevent dragging/selection */
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
+  
+  /* Ensure proper display */
+  display: block;
+}
+
+/* Support for high-DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .retro-pet-image {
+    image-rendering: auto;
+  }
 }
 
 /* Light Vignette - Subtle */
@@ -280,6 +316,7 @@
   padding: 28px 24px 24px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  pointer-events: auto;
 }
 
 .retro-pet-info-content {
@@ -428,6 +465,17 @@
     inset 0 -2px 6px rgba(0, 0, 0, 0.8),
     inset 0 2px 2px rgba(255, 255, 255, 0.1),
     0 2px 4px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retro-knob:hover {
+  transform: scale(1.05);
+  background: radial-gradient(circle, #666 0%, #444 70%, #2a2a2a 100%);
+}
+
+.retro-knob:active {
+  transform: scale(0.95);
 }
 
 .retro-knob-marker {
@@ -440,6 +488,7 @@
   background: var(--floofy-orange);
   border-radius: 2px;
   box-shadow: 0 0 6px rgba(244, 162, 89, 0.8);
+  pointer-events: none;
 }
 
 /* ========================================
@@ -517,7 +566,7 @@
   }
 
   .retro-carousel-track {
-    left: 24px;
+    left: 0;
   }
 }
 
@@ -525,8 +574,7 @@
    PERFORMANCE OPTIMIZATIONS
 ======================================== */
 
-.retro-pet-card,
-.retro-pet-image {
+.retro-pet-card {
   transform: translateZ(0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
@@ -538,16 +586,14 @@
 
 @media (prefers-reduced-motion: reduce) {
   .retro-tv-container,
-  .retro-pet-image,
   .retro-pet-status.available,
   .retro-status-dot,
   .retro-channel {
     animation: none !important;
   }
 
-  .retro-indicator:hover {
+  .retro-indicator:hover,
+  .retro-knob:hover {
     transform: none;
   }
 }
-
-

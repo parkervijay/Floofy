@@ -1,24 +1,20 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { motion, PanInfo, useMotionValue, useTransform, MotionValue } from 'motion/react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { motion, PanInfo, useMotionValue, useTransform, MotionValue } from "framer-motion";
 import './RetroTVCarousel-standalone.css';
 
+// API-ready interface - can be populated from any data source
 export interface PetCarouselItem {
-  image: string;
-  breed: string;
-  age: string;
+  id: number | string;
+  image: string;      // Image URL from API
+  breed: string;      // Pet breed from API
+  age: string;        // Pet age from API
   status: "Available" | "Adopted";
-  id: number;
 }
 
 export interface RetroTVCarouselProps {
   pets: PetCarouselItem[];
-  /**
-   * Optional async loader so you can plug in an API later.
-   * If provided, its result will override the static `pets` prop when resolved.
-   */
-  fetchPets?: () => Promise<PetCarouselItem[]>;
   baseWidth?: number;
   autoplay?: boolean;
   autoplayDelay?: number;
@@ -28,7 +24,7 @@ export interface RetroTVCarouselProps {
 
 const DRAG_BUFFER = 0;
 const VELOCITY_THRESHOLD = 500;
-const GAP = 24;
+const GAP = 32;
 const SPRING_OPTIONS = { type: 'spring' as const, stiffness: 280, damping: 28 };
 
 interface PetCardProps {
@@ -37,18 +33,17 @@ interface PetCardProps {
   itemWidth: number;
   trackItemOffset: number;
   x: MotionValue<number>;
-  transition: any;
+  transition: typeof SPRING_OPTIONS | { duration: number };
 }
 
-function PetCard({ pet, index, itemWidth, trackItemOffset, x, transition }: PetCardProps) {
+function PetCard({ pet, index, itemWidth, trackItemOffset, x, transition }: PetCardProps): React.ReactElement {
   const range = [-(index + 1) * trackItemOffset, -index * trackItemOffset, -(index - 1) * trackItemOffset];
-  const outputRange = [15, 0, -15];
+  const outputRange = [12, 0, -12];
   const rotateY = useTransform(x, range, outputRange, { clamp: false });
-  const scale = useTransform(x, range, [0.88, 1, 0.88], { clamp: false });
+  const scale = useTransform(x, range, [0.92, 1, 0.92], { clamp: false });
 
   return (
     <motion.div
-      key={`${pet.id}-${index}`}
       className="retro-pet-card"
       style={{
         width: itemWidth,
@@ -58,18 +53,17 @@ function PetCard({ pet, index, itemWidth, trackItemOffset, x, transition }: PetC
       }}
       transition={transition}
     >
-      {/* Pet Image */}
+      {/* Pet Image - Optimized for any size */}
       <div className="retro-pet-image-container">
         <img 
           src={pet.image} 
           alt={pet.breed}
           className="retro-pet-image"
+          loading="lazy"
         />
-        <div className="retro-vignette" />
-        <div className="retro-scanlines" />
       </div>
 
-      {/* Pet Info Overlay - Bottom placement for aesthetics */}
+      {/* Pet Info Overlay - API Data */}
       <div className="retro-pet-info">
         <div className="retro-pet-info-content">
           <div className="retro-pet-breed">{pet.breed}</div>
@@ -86,62 +80,55 @@ function PetCard({ pet, index, itemWidth, trackItemOffset, x, transition }: PetC
 
 export default function RetroTVCarousel({
   pets,
-  fetchPets,
   baseWidth = 720,
   autoplay = true,
   autoplayDelay = 5000,
   pauseOnHover = true,
   loop = true
-}: RetroTVCarouselProps): React.JSX.Element {
+}: RetroTVCarouselProps): React.ReactElement {
   const containerPadding = 32;
-  const itemWidth = baseWidth - containerPadding * 2;
+  const [itemWidth, setItemWidth] = useState<number>(baseWidth - containerPadding * 2);
   const trackItemOffset = itemWidth + GAP;
-  const [resolvedPets, setResolvedPets] = useState<PetCarouselItem[]>(pets);
-
-  // Keep local pets in sync with prop changes
-  useEffect(() => {
-    setResolvedPets(pets);
-  }, [pets]);
-
-  // Optional API hook – when provided, it replaces the local pets
-  useEffect(() => {
-    if (!fetchPets) return;
-    let cancelled = false;
-
-    fetchPets()
-      .then((data) => {
-        if (!cancelled && Array.isArray(data)) {
-          setResolvedPets(data);
-        }
-      })
-      .catch(() => {
-        // Swallow errors – you can handle logging where you call the component.
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [fetchPets]);
-
+  
   const itemsForRender = useMemo(() => {
-    if (!loop) return resolvedPets;
-    if (resolvedPets.length === 0) return [];
-    return [resolvedPets[resolvedPets.length - 1], ...resolvedPets, resolvedPets[0]];
-  }, [resolvedPets, loop]);
+    if (!loop) return pets;
+    if (pets.length === 0) return [];
+    return [pets[pets.length - 1], ...pets, pets[0]];
+  }, [pets, loop]);
 
   const [position, setPosition] = useState<number>(loop ? 1 : 0);
-  const x = useMotionValue(0);
+  const x = useMotionValue<number>(0);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isJumping, setIsJumping] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const screenRef = useRef<HTMLDivElement>(null);
+
+  // Measure the inner screen width so each card perfectly fills it,
+  // and recompute on resize for full responsiveness.
+  useEffect(() => {
+    const measure = () => {
+      if (!screenRef.current) return;
+      const width = screenRef.current.clientWidth;
+      if (width > 0) {
+        setItemWidth(width);
+      }
+    };
+
+    measure();
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', measure);
+      return () => window.removeEventListener('resize', measure);
+    }
+  }, []);
   
   useEffect(() => {
     if (pauseOnHover && containerRef.current) {
       const container = containerRef.current;
-      const handleMouseEnter = () => setIsHovered(true);
-      const handleMouseLeave = () => setIsHovered(false);
+      const handleMouseEnter = (): void => setIsHovered(true);
+      const handleMouseLeave = (): void => setIsHovered(false);
       container.addEventListener('mouseenter', handleMouseEnter);
       container.addEventListener('mouseleave', handleMouseLeave);
       return () => {
@@ -166,7 +153,7 @@ export default function RetroTVCarousel({
     const startingPosition = loop ? 1 : 0;
     setPosition(startingPosition);
     x.set(-startingPosition * trackItemOffset);
-  }, [resolvedPets.length, loop, trackItemOffset, x]);
+  }, [pets.length, loop, trackItemOffset, x]);
 
   useEffect(() => {
     if (!loop && position > itemsForRender.length - 1) {
@@ -176,11 +163,11 @@ export default function RetroTVCarousel({
 
   const effectiveTransition = isJumping ? { duration: 0 } : SPRING_OPTIONS;
 
-  const handleAnimationStart = () => {
+  const handleAnimationStart = (): void => {
     setIsAnimating(true);
   };
 
-  const handleAnimationComplete = () => {
+  const handleAnimationComplete = (): void => {
     if (!loop || itemsForRender.length <= 1) {
       setIsAnimating(false);
       return;
@@ -232,18 +219,6 @@ export default function RetroTVCarousel({
     });
   };
 
-  const goToByDirection = (direction: 1 | -1) => {
-    if (itemsForRender.length <= 1) return;
-    setPosition(prev => {
-      const next = prev + direction;
-      const max = itemsForRender.length - 1;
-      return Math.max(0, Math.min(next, max));
-    });
-  };
-
-  const handleNext = () => goToByDirection(1);
-  const handlePrev = () => goToByDirection(-1);
-
   const dragProps = loop
     ? {}
     : {
@@ -254,11 +229,29 @@ export default function RetroTVCarousel({
       };
 
   const activeIndex =
-    resolvedPets.length === 0
-      ? 0
-      : loop
-        ? (position - 1 + resolvedPets.length) % resolvedPets.length
-        : Math.min(position, resolvedPets.length - 1);
+    pets.length === 0 ? 0 : loop ? (position - 1 + pets.length) % pets.length : Math.min(position, pets.length - 1);
+
+  // Navigation handlers
+  const goToPrevious = (): void => {
+    if (isAnimating) return;
+    setPosition(prev => {
+      const next = prev - 1;
+      return Math.max(0, next);
+    });
+  };
+
+  const goToNext = (): void => {
+    if (isAnimating) return;
+    setPosition(prev => {
+      const next = prev + 1;
+      const max = itemsForRender.length - 1;
+      return Math.min(next, max);
+    });
+  };
+
+  // Check if navigation buttons should be disabled
+  const canGoLeft = loop || position > (loop ? 1 : 0);
+  const canGoRight = loop || position < (loop ? itemsForRender.length - 2 : itemsForRender.length - 1);
 
   return (
     <div className="retro-tv-wrapper">
@@ -267,7 +260,8 @@ export default function RetroTVCarousel({
         ref={containerRef}
         className="retro-tv-container"
         style={{
-          width: `${baseWidth}px`,
+          width: '100%',
+          maxWidth: `${baseWidth}px`,
         }}
       >
         {/* TV Screen Bezel */}
@@ -283,16 +277,51 @@ export default function RetroTVCarousel({
           
           {/* Channel Number Display */}
           <div className="retro-channel">CH {activeIndex + 1}</div>
+
+          {/* Navigation Buttons - Left */}
+          <button 
+            className="retro-nav-button retro-nav-left"
+            onClick={goToPrevious}
+            disabled={!canGoLeft || isAnimating}
+            aria-label="Previous pet"
+          >
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              strokeWidth={3} 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+
+          {/* Navigation Buttons - Right */}
+          <button 
+            className="retro-nav-button retro-nav-right"
+            onClick={goToNext}
+            disabled={!canGoRight || isAnimating}
+            aria-label="Next pet"
+          >
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              strokeWidth={3} 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
         </div>
 
         {/* Screen Content */}
-        <div className="retro-tv-screen">
+        <div ref={screenRef} className="retro-tv-screen">
           <motion.div
             className="retro-carousel-track"
             drag={isAnimating ? false : 'x'}
             {...dragProps}
             style={{
-              width: itemWidth,
               gap: `${GAP}px`,
               perspective: 1200,
               perspectiveOrigin: `${position * trackItemOffset + itemWidth / 2}px 50%`,
@@ -316,16 +345,13 @@ export default function RetroTVCarousel({
               />
             ))}
           </motion.div>
-
-          {/* CRT Screen Effect */}
-          <div className="retro-crt-overlay" />
         </div>
 
         {/* Bottom Control Panel */}
         <div className="retro-control-panel">
           {/* Indicator Dots */}
           <div className="retro-indicators">
-            {resolvedPets.map((_, index) => (
+            {pets.map((_, index) => (
               <motion.div
                 key={index}
                 className={`retro-indicator ${activeIndex === index ? 'active' : 'inactive'}`}
@@ -341,32 +367,10 @@ export default function RetroTVCarousel({
 
           {/* Decorative Knobs */}
           <div className="retro-knobs">
-            <div
-              className="retro-knob"
-              role="button"
-              tabIndex={0}
-              onClick={handlePrev}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handlePrev();
-                }
-              }}
-            >
+            <div className="retro-knob">
               <div className="retro-knob-marker" />
             </div>
-            <div
-              className="retro-knob"
-              role="button"
-              tabIndex={0}
-              onClick={handleNext}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleNext();
-                }
-              }}
-            >
+            <div className="retro-knob">
               <div className="retro-knob-marker" />
             </div>
           </div>

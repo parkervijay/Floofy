@@ -9,7 +9,7 @@ interface Pos {
 
 export default function CustomCursor() {
   const [pos, setPos] = useState<Pos>({ x: 0, y: 0 });
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true); // Start visible
   const [active, setActive] = useState(false);
 
   // Whether we should show the custom cursor at all
@@ -21,6 +21,7 @@ export default function CustomCursor() {
     
     // Skip on mobile to prevent hydration mismatch
     if (window.innerWidth < 768) {
+      document.body.classList.add("no-custom-cursor");
       return;
     }
 
@@ -31,7 +32,16 @@ export default function CustomCursor() {
     // Only enable cursor on non-touch (desktop / laptop)
     if (!isTouch) {
       setEnabled(true);
+      document.body.classList.add("has-custom-cursor");
+      document.body.classList.remove("no-custom-cursor");
+    } else {
+      document.body.classList.add("no-custom-cursor");
+      document.body.classList.remove("has-custom-cursor");
     }
+
+    return () => {
+      document.body.classList.remove("has-custom-cursor", "no-custom-cursor");
+    };
   }, []);
 
   // 2) Only attach mouse listeners when enabled === true
@@ -39,17 +49,17 @@ export default function CustomCursor() {
     if (!enabled) return;
 
     const handleMouseMove = (e: MouseEvent) => {
-  const target = e.target as HTMLElement;
+      const target = e.target as HTMLElement;
 
-  // 🔥 If inside native cursor zone, disable custom cursor
-  if (target.closest("[data-native-cursor]")) {
-    setVisible(false);
-    return;
-  }
+      // 🔥 If inside native cursor zone, disable custom cursor
+      if (target.closest("[data-native-cursor]")) {
+        setVisible(false);
+        return;
+      }
 
-  setPos({ x: e.clientX, y: e.clientY });
-  setVisible(true);
-};
+      setPos({ x: e.clientX, y: e.clientY });
+      setVisible(true);
+    };
 
 
     const handleMouseEnter = () => setVisible(true);
@@ -83,22 +93,14 @@ export default function CustomCursor() {
       style={{
         transform: `translate3d(${pos.x}px, ${pos.y}px, 0)`,
         opacity: visible ? 1 : 0,
+        pointerEvents: "none",
       }}
-      className="pointer-events-none fixed z-[9999] -translate-x-1/2 -translate-y-1/2 transition-opacity duration-150"
+      className={`custom-cursor fixed z-[9999] transition-opacity duration-150 ${
+        active ? "scale-90" : "scale-100"
+      }`}
     >
-      {/* soft glow */}
-      <div
-        className={`h-10 w-10 rounded-full bg-blue-500/20 blur-[6px] transition-transform duration-100 ${
-          active ? "scale-75" : "scale-100"
-        }`}
-      />
-
-      {/* main dot */}
-      <div
-        className={`absolute inset-0 m-auto flex h-4 w-4 items-center justify-center rounded-full bg-white shadow-lg transition-transform duration-100 ${
-          active ? "scale-75" : "scale-100"
-        }`}
-      />
+      {/* Orange paw cursor (uses existing CSS in globals.css) */}
+      <div className="cursor-paw" />
     </div>
   );
 }
